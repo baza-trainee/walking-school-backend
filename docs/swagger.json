@@ -1,0 +1,15 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is Walking-School backend API",
+        "title": "Walking-School backend API",
+        "contact": {
+            "name": "Yehor Tverytinov",
+            "email": "etverya12@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:7000",
+    "basePath": "/",
+    "paths": {}
+}

@@ -1,5 +1,89 @@
 package main
 
+import (
+	"context"
+	"log"
+	"os"
+	"os/signal"
+	"time"
+
+	_ "github.com/baza-trainee/walking-school-backend/docs"
+	"github.com/baza-trainee/walking-school-backend/internal/api"
+	"github.com/baza-trainee/walking-school-backend/internal/api/handler"
+	"github.com/baza-trainee/walking-school-backend/internal/config"
+	"github.com/baza-trainee/walking-school-backend/internal/logger"
+	"github.com/baza-trainee/walking-school-backend/internal/service"
+	"github.com/baza-trainee/walking-school-backend/internal/storage"
+	_ "github.com/swaggo/swag"
+)
+
+const timeoutLimit = 5
+
+// @title Walking-School backend API
+// @version 1.0
+// @description This is Walking-School backend API
+// tag.name "-----tag.name-----"
+// tag.description "-----tag.description-----"
+// @contact.name Yehor Tverytinov
+// @contact.email etverya12@gmail.com
+// @host localhost:7000
+// host https://walking-school-backend.com
+// @BasePath /
+
 func main() {
+	cfg, err := config.InitConfig()
+	if err != nil {
+		log.Fatal(err.Error())
+
+		return
+	}
+
+	log := logger.SetupLogger(cfg.LogLevel)
+	log.Info("Server started")
+
+	storage, err := storage.NewStorage(cfg.DB)
+	defer storage.DB.Disconnect(context.TODO())
+	if err != nil {
+		log.Error("New Repository error: ", err.Error())
+
+		return
+	}
+
+	service, err := service.NewService(storage)
+	if err != nil {
+		log.Error("New Service error: ", err.Error())
+
+		return
+	}
+
+	handler, err := handler.NewHandler(service, log)
+	if err != nil {
+		log.Error("New Handler error: ", err.Error())
+
+		return
+	}
+
+	server := api.NewServer(cfg.Server, handler)
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+
+	go func() {
+		if err := server.HTTPServer.Listen(cfg.Server.AppAddress); err != nil {
+			log.Error("Start and Listen", "error", err.Error())
+		}
+	}()
+
+	<-quit
+
+	if err := server.HTTPServer.ShutdownWithTimeout(timeoutLimit * time.Second); err != nil {
+		log.Error("ShutdownWithTimeout", "error", err.Error())
+	}
+
+	if err := server.HTTPServer.Shutdown(); err != nil {
+		log.Error("Server shutdown", "error", err.Error())
+	}
+
+	log.Info("Server stopped")
 
 }
