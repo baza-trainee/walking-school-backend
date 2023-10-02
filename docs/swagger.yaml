@@ -1,0 +1,11 @@
+basePath: /
+host: localhost:7000
+info:
+  contact:
+    email: etverya12@gmail.com
+    name: Yehor Tverytinov
+  description: This is Walking-School backend API
+  title: Walking-School backend API
+  version: "1.0"
+paths: {}
+swagger: "2.0"

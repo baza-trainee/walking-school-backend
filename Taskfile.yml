@@ -1,0 +1,15 @@
+version: "3"
+
+dotenv: [".env"]
+
+tasks:
+  run:
+    env:
+      DB_HOST: localhost
+    cmds:
+      # - docker compose -f postgres.yml up -d
+      - go run cmd/main.go
+  
+  swaginit:
+    cmds:
+      - swag init -d cmd
