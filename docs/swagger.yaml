@@ -1,11 +1,270 @@
 basePath: /
+definitions:
+  model.CreateProjectSwagger:
+    properties:
+      age_category:
+        example: ""
+        type: string
+      category:
+        example: ""
+        type: string
+      description:
+        example: ""
+        type: string
+      image:
+        example: ""
+        type: string
+      link:
+        example: ""
+        type: string
+      period:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      title:
+        example: ""
+        type: string
+    type: object
+  model.Project:
+    properties:
+      age_category:
+        example: ""
+        type: string
+      category:
+        example: ""
+        type: string
+      date:
+        example: ""
+        type: string
+      description:
+        example: ""
+        type: string
+      id:
+        example: ""
+        type: string
+      image:
+        example: ""
+        type: string
+      is_active:
+        example: true
+        type: boolean
+      last_modified:
+        example: ""
+        type: string
+      link:
+        example: ""
+        type: string
+      period:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      title:
+        example: ""
+        type: string
+    required:
+    - age_category
+    - category
+    - description
+    - image
+    - link
+    - period
+    - title
+    type: object
+  model.Response:
+    properties:
+      code:
+        type: integer
+      messsage:
+        type: string
+    type: object
 host: localhost:7000
 info:
   contact:
     email: etverya12@gmail.com
     name: Yehor Tverytinov
-  description: This is Walking-School backend API
   title: Walking-School backend API
   version: "1.0"
-paths: {}
+paths:
+  /project:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get project.
+      tags:
+      - project
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Project
+        in: body
+        name: Project
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateProjectSwagger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Create project.
+      tags:
+      - project
+  /project/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Delete project by id.
+      tags:
+      - project
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get project by id.
+      tags:
+      - project
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Project
+        in: body
+        name: Project
+        required: true
+        schema:
+          $ref: '#/definitions/model.Project'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Update project by id.
+      tags:
+      - project
 swagger: "2.0"

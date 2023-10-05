@@ -3,21 +3,31 @@ package api
 import (
 	"errors"
 
+	"log/slog"
+
 	"github.com/baza-trainee/walking-school-backend/internal/api/handler"
 	"github.com/baza-trainee/walking-school-backend/internal/config"
 	"github.com/baza-trainee/walking-school-backend/internal/model"
+	"github.com/baza-trainee/walking-school-backend/internal/service"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/fiber/v2/middleware/timeout"
 	"github.com/gofiber/swagger"
 )
 
 type Server struct {
 	HTTPServer *fiber.App
+	Service    service.Service
+	Log        *slog.Logger
 }
 
-func NewServer(cfg config.Server, h handler.Handler) *Server {
+func NewServer(cfg config.Server, service service.Service, log *slog.Logger) *Server {
 	server := new(Server)
+
+	server.Service = service
+
+	server.Log = log
 
 	fconfig := fiber.Config{
 		ReadTimeout:  cfg.AppReadTimeout,
@@ -49,17 +59,19 @@ func NewServer(cfg config.Server, h handler.Handler) *Server {
 
 	server.HTTPServer.Use(recover.New())
 
-	server.initRoutes(server.HTTPServer, cfg, h)
+	server.initRoutes(server.HTTPServer, cfg)
 
 	return server
 }
 
-func (s Server) initRoutes(app *fiber.App, cfg config.Server, h handler.Handler) {
+func (s Server) initRoutes(app *fiber.App, cfg config.Server) {
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello my WORLD!!!")
-	})
+	app.Post("/project", timeout.NewWithContext(handler.CreateProjectHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/project", timeout.NewWithContext(handler.GetProjectHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/project/:id", timeout.NewWithContext(handler.GetProjectByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Put("/project/:id", timeout.NewWithContext(handler.UpdateProjectByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Delete("/project/:id", timeout.NewWithContext(handler.DeleteProjectByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 }
 
 func corsConfig() cors.Config {

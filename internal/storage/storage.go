@@ -12,11 +12,16 @@ import (
 )
 
 const (
-	connectTimeout = 5 * time.Second
+	connectTimeout        = 5 * time.Second
+	projectCollection     = "Project"
+	userCollection        = "User"
+	partnerCollection     = "Partner"
+	contactCollection     = "Contact"
+	walkingSchoolDatabase = "WalkingSchool"
 )
 
 type Storage struct {
-	DB *mongo.Client
+	DB *mongo.Database
 }
 
 func NewStorage(cfg config.MongoDB) (Storage, error) {
@@ -34,5 +39,7 @@ func NewStorage(cfg config.MongoDB) (Storage, error) {
 		return Storage{}, fmt.Errorf("error during Ping to db: %w", err)
 	}
 
-	return Storage{DB: client}, nil
+	database := client.Database(walkingSchoolDatabase)
+
+	return Storage{DB: database}, nil
 }
