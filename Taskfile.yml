@@ -12,4 +12,4 @@ tasks:
   
   swaginit:
     cmds:
-      - swag init -d cmd
+      - swag init -d cmd,internal/api/handler,internal/model

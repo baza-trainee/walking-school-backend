@@ -9,7 +9,6 @@ import (
 
 	_ "github.com/baza-trainee/walking-school-backend/docs"
 	"github.com/baza-trainee/walking-school-backend/internal/api"
-	"github.com/baza-trainee/walking-school-backend/internal/api/handler"
 	"github.com/baza-trainee/walking-school-backend/internal/config"
 	"github.com/baza-trainee/walking-school-backend/internal/logger"
 	"github.com/baza-trainee/walking-school-backend/internal/service"
@@ -21,7 +20,6 @@ const timeoutLimit = 5
 
 // @title Walking-School backend API
 // @version 1.0
-// @description This is Walking-School backend API
 // tag.name "-----tag.name-----"
 // tag.description "-----tag.description-----"
 // @contact.name Yehor Tverytinov
@@ -42,12 +40,19 @@ func main() {
 	log.Info("Server started")
 
 	storage, err := storage.NewStorage(cfg.DB)
-	defer storage.DB.Disconnect(context.TODO())
 	if err != nil {
-		log.Error("New Repository error: ", err.Error())
+		log.Error("NewStorage error: ", err.Error())
 
 		return
 	}
+
+	defer func() {
+		if err := storage.DB.Client().Disconnect(context.TODO()); err != nil {
+			log.Error("Storage Disconnect error: ", err.Error())
+
+			return
+		}
+	}()
 
 	service, err := service.NewService(storage)
 	if err != nil {
@@ -56,14 +61,7 @@ func main() {
 		return
 	}
 
-	handler, err := handler.NewHandler(service, log)
-	if err != nil {
-		log.Error("New Handler error: ", err.Error())
-
-		return
-	}
-
-	server := api.NewServer(cfg.Server, handler)
+	server := api.NewServer(cfg.Server, service, log)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
