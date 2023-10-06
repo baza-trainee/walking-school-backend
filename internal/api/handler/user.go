@@ -12,6 +12,8 @@ import (
 type UserServiceInterface interface {
 	CreateUserService(context.Context, model.User) error
 	GetAllUserService(context.Context, model.UserQuery) ([]model.User, error)
+	GetUserByIDService(context.Context, string) (model.User, error)
+	UpdateUserByIDService(context.Context, model.User) error
 }
 
 // @Summary Create user.
@@ -105,5 +107,102 @@ func GetAllUserHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
 		}
 
 		return c.Status(fiber.StatusOK).JSON(result)
+	}
+}
+
+// @Summary Get user by id.
+// Description Gets user by id.
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param id path string true "ID"
+// @Success 200 {object} model.Response
+// @Failure 400 {object} model.Response
+// @Failure 404 {object} model.Response
+// @Failure 408 {object} model.Response
+// @Failure 500 {object} model.Response
+// @Router /user/{id} [get].
+func GetUserByIDHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		param := struct {
+			ID string `params:"id" validate:"required,uuid"`
+		}{}
+
+		if err := c.ParamsParser(&param); err != nil {
+			log.Debug("GetUserByIDHandler error: ", err.Error())
+
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+
+		if err := validate.Struct(param); err != nil {
+			log.Debug("GetUserByIDHandler error: ", err.Error())
+
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+
+		result, err := s.GetUserByIDService(c.UserContext(), param.ID)
+		if err != nil {
+			if errors.Is(err, model.ErrNotFound) {
+				log.Debug("GetUserByIDService error: ", err.Error())
+
+				return fiber.NewError(fiber.StatusNotFound, err.Error())
+			}
+
+			log.Error("GetUserByIDService error: ", err.Error())
+			// Какие ошибки могут возвращаться?
+			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+		}
+
+		return c.Status(fiber.StatusOK).JSON(result)
+	}
+}
+
+// @Summary Update user by id.
+// Description Updates user by id.
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param User body model.UpdateUserSwagger true "User"
+// @Success 200 {object} model.Response
+// @Failure 400 {object} model.Response
+// @Failure 404 {object} model.Response
+// @Failure 408 {object} model.Response
+// @Failure 500 {object} model.Response
+// @Router /user [put].
+func UpdateUserByIDHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		user := model.User{}
+
+		if err := c.BodyParser(&user); err != nil {
+			log.Debug("UpdateUserByIDHandler error: ", err.Error())
+
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+
+		if err := UserValidate(validate, user); err != nil {
+			log.Debug("CreateUserHandler error: ", err.Error())
+
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+
+		if err := s.UpdateUserByIDService(c.UserContext(), user); err != nil {
+			if errors.Is(err, model.ErrConflict) {
+				log.Debug("UpdateUserByIDService error: ", err.Error())
+
+				return fiber.NewError(fiber.StatusConflict, err.Error())
+			}
+
+			if errors.Is(err, model.ErrNotFound) {
+				log.Debug("UpdateUserByIDService error: ", err.Error())
+
+				return fiber.NewError(fiber.StatusNotFound, err.Error())
+			}
+
+			log.Error("UpdateUserByIDService error: ", err.Error())
+			// Какие ошибки могут возвращаться?
+			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+		}
+
+		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))
 	}
 }

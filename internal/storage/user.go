@@ -2,23 +2,18 @@ package storage
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/baza-trainee/walking-school-backend/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func (s Storage) CreateUsertStorage(ctx context.Context, user model.User) error {
 	collection := s.DB.Collection(userCollection)
 
-	// decode := model.User{}
-
-	if err := collection.FindOne(ctx, contactFilter(user.Phone, user.Email)).Decode(&model.User{}); err == nil {
-		// fmt.Println("-------------------------------")
-		// fmt.Println(user)
-		// fmt.Println("------/-/-/-/-/-/-/-/-/-/-/-/-/-/------------")
-		// fmt.Println(decode)
-		// fmt.Println("-------------------------------")
+	if err := collection.FindOne(ctx, creationFilter(user.Phone, user.Email)).Decode(&model.User{}); err == nil {
 		return fmt.Errorf("may be such contacts already exist: %w", model.ErrConflict)
 	}
 
@@ -60,4 +55,39 @@ func (s Storage) GetAllUserStorage(ctx context.Context, query model.UserQuery) (
 
 	return result, nil
 
+}
+
+func (s Storage) GetUserByIDStorage(ctx context.Context, id string) (model.User, error) {
+	collection := s.DB.Collection(userCollection)
+
+	user := model.User{}
+
+	if err := collection.FindOne(ctx, bson.D{{Key: "_id", Value: id}}).Decode(&user); err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return model.User{}, model.ErrNotFound
+		}
+
+		return model.User{}, fmt.Errorf("error occurred in FindOne: %w", err)
+	}
+
+	return user, nil
+}
+
+func (s Storage) UpdateUserByIDStorage(ctx context.Context, user model.User) error {
+	collection := s.DB.Collection(userCollection)
+
+	if err := collection.FindOne(ctx, updateFilter(user.ID, user.Phone, user.Email)).Decode(&model.User{}); err == nil {
+		return fmt.Errorf("may be such contacts already exist: %w", model.ErrConflict)
+	}
+
+	result, err := collection.ReplaceOne(ctx, bson.D{{Key: "_id", Value: user.ID}}, user)
+	if err != nil {
+		return fmt.Errorf("error occurred in ReplaceOne: %w", err)
+	}
+
+	if result.MatchedCount != matchedOneDocument {
+		return model.ErrNotFound
+	}
+
+	return nil
 }

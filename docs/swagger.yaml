@@ -126,6 +126,54 @@ definitions:
       messsage:
         type: string
     type: object
+  model.UpdateUserSwagger:
+    properties:
+      combat_certificate:
+        example: true
+        type: boolean
+      disability_certificate:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      email:
+        example: ""
+        type: string
+      id:
+        example: ""
+        type: string
+      international_passport:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      location:
+        example: ""
+        type: string
+      name:
+        example: ""
+        type: string
+      patronymic:
+        example: ""
+        type: string
+      phone:
+        example: ""
+        type: string
+      physical_action_constraints:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      surname:
+        example: ""
+        type: string
+      weight_below_95:
+        example: true
+        type: boolean
+    type: object
 host: localhost:7000
 info:
   contact:
@@ -393,6 +441,78 @@ paths:
           schema:
             $ref: '#/definitions/model.Response'
       summary: Create user.
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: User
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateUserSwagger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Update user by id.
+      tags:
+      - user
+  /user/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get user by id.
       tags:
       - user
 swagger: "2.0"

@@ -14,6 +14,21 @@ type CreateUserSwagger struct {
 	PhysicalActionConstraints []string `json:"physical_action_constraints" example:""`
 }
 
+type UpdateUserSwagger struct {
+	ID                        string   `json:"id,omitempty" example:""`
+	Name                      string   `json:"name" example:""`
+	Surname                   string   `json:"surname" example:""`
+	Patronymic                string   `json:"patronymic" example:""`
+	Location                  string   `json:"location" example:""`
+	Phone                     string   `json:"phone" example:""`
+	Email                     string   `json:"email" example:""`
+	CombatCertificate         bool     `json:"combat_certificate" example:"true"`
+	DisabilityCertificate     []string `json:"disability_certificate" example:""`
+	InternationalPassport     []string `json:"international_passport" example:""`
+	WeightBelow95             bool     `json:"weight_below_95" example:"true"`
+	PhysicalActionConstraints []string `json:"physical_action_constraints" example:""`
+}
+
 type User struct {
 	ID                        string   `json:"id,omitempty" bson:"_id" validate:"omitempty,uuid" example:""`
 	Name                      string   `json:"name" bson:"name" validate:"required" example:""`
