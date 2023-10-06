@@ -162,7 +162,7 @@ func GetProjectByIDHandler(s ProjectServiceInterface, log *slog.Logger) fiber.Ha
 // @Failure 404 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /project/{id} [put].
+// @Router /project [put].
 func UpdateProjectByIDHandler(s ProjectServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		project := model.Project{}
