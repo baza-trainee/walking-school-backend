@@ -22,7 +22,7 @@ func (s Storage) CreateProjectStorage(ctx context.Context, project model.Project
 	return nil
 }
 
-func (s Storage) GetProjectStorage(ctx context.Context, query model.ProjectQuery) ([]model.Project, error) {
+func (s Storage) GetAllProjectStorage(ctx context.Context, query model.ProjectQuery) ([]model.Project, error) {
 	collection := s.DB.Collection(projectCollection)
 
 	result := make([]model.Project, 0)

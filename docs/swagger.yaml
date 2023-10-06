@@ -27,6 +27,51 @@ definitions:
         example: ""
         type: string
     type: object
+  model.CreateUserSwagger:
+    properties:
+      combat_certificate:
+        example: true
+        type: boolean
+      disability_certificate:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      email:
+        example: example1@gmail.com
+        type: string
+      international_passport:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      location:
+        example: ""
+        type: string
+      name:
+        example: ""
+        type: string
+      patronymic:
+        example: ""
+        type: string
+      phone:
+        example: "+380631122331"
+        type: string
+      physical_action_constraints:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      surname:
+        example: ""
+        type: string
+      weight_below_95:
+        example: true
+        type: boolean
+    type: object
   model.Project:
     properties:
       age_category:
@@ -35,7 +80,7 @@ definitions:
       category:
         example: ""
         type: string
-      date:
+      created:
         example: ""
         type: string
       description:
@@ -125,7 +170,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.Response'
-      summary: Get project.
+      summary: Get all projects.
       tags:
       - project
     post:
@@ -143,6 +188,10 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/model.Response'
         "400":
@@ -267,4 +316,83 @@ paths:
       summary: Update project by id.
       tags:
       - project
+  /user:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get all users.
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateUserSwagger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Create user.
+      tags:
+      - user
 swagger: "2.0"

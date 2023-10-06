@@ -1,7 +1,8 @@
 package service
 
 type StorageInterface interface {
-	ProjectInterface
+	ProjectStorageInterface
+	UserStorageInterface
 }
 
 type Service struct {

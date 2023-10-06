@@ -15,7 +15,7 @@ type Project struct {
 	Title        string   `json:"title" bson:"title" validate:"required" example:""`
 	Description  string   `json:"description" bson:"description" validate:"required" example:""`
 	Link         string   `json:"link" bson:"link" validate:"required" example:""`
-	Date         string   `json:"date" bson:"date" example:""`
+	Created      string   `json:"created" bson:"created" example:""`
 	LastModified string   `json:"last_modified" bson:"last_modified" example:""`
 	Image        string   `json:"image" bson:"image" validate:"required" example:""`
 	IsActive     bool     `json:"is_active" bson:"is_active" example:"true"`

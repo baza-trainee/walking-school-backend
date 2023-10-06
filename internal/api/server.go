@@ -68,10 +68,14 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Server) {
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	app.Post("/project", timeout.NewWithContext(handler.CreateProjectHandler(s.Service, s.Log), cfg.AppWriteTimeout))
-	app.Get("/project", timeout.NewWithContext(handler.GetProjectHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/project", timeout.NewWithContext(handler.GetAllProjectHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Get("/project/:id", timeout.NewWithContext(handler.GetProjectByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Put("/project/:id", timeout.NewWithContext(handler.UpdateProjectByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Delete("/project/:id", timeout.NewWithContext(handler.DeleteProjectByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+
+	app.Post("/user", timeout.NewWithContext(handler.CreateUserHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/user", timeout.NewWithContext(handler.GetAllUserHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+
 }
 
 func corsConfig() cors.Config {
