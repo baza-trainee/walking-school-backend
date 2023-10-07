@@ -27,6 +27,51 @@ definitions:
         example: ""
         type: string
     type: object
+  model.CreateUserSwagger:
+    properties:
+      combat_certificate:
+        example: true
+        type: boolean
+      disability_certificate:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      email:
+        example: example1@gmail.com
+        type: string
+      international_passport:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      location:
+        example: ""
+        type: string
+      name:
+        example: ""
+        type: string
+      patronymic:
+        example: ""
+        type: string
+      phone:
+        example: "+380631122331"
+        type: string
+      physical_action_constraints:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      surname:
+        example: ""
+        type: string
+      weight_below_95:
+        example: true
+        type: boolean
+    type: object
   model.Project:
     properties:
       age_category:
@@ -35,7 +80,7 @@ definitions:
       category:
         example: ""
         type: string
-      date:
+      created:
         example: ""
         type: string
       description:
@@ -81,6 +126,54 @@ definitions:
       messsage:
         type: string
     type: object
+  model.UpdateUserSwagger:
+    properties:
+      combat_certificate:
+        example: true
+        type: boolean
+      disability_certificate:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      email:
+        example: ""
+        type: string
+      id:
+        example: ""
+        type: string
+      international_passport:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      location:
+        example: ""
+        type: string
+      name:
+        example: ""
+        type: string
+      patronymic:
+        example: ""
+        type: string
+      phone:
+        example: ""
+        type: string
+      physical_action_constraints:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+      surname:
+        example: ""
+        type: string
+      weight_below_95:
+        example: true
+        type: boolean
+    type: object
 host: localhost:7000
 info:
   contact:
@@ -125,7 +218,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.Response'
-      summary: Get project.
+      summary: Get all projects.
       tags:
       - project
     post:
@@ -145,6 +238,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.Response'
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Response'
         "400":
           description: Bad Request
           schema:
@@ -158,6 +255,42 @@ paths:
           schema:
             $ref: '#/definitions/model.Response'
       summary: Create project.
+      tags:
+      - project
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Project
+        in: body
+        name: Project
+        required: true
+        schema:
+          $ref: '#/definitions/model.Project'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Update project by id.
       tags:
       - project
   /project/{id}:
@@ -231,16 +364,95 @@ paths:
       summary: Get project by id.
       tags:
       - project
+  /user:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get all users.
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateUserSwagger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Create user.
+      tags:
+      - user
     put:
       consumes:
       - application/json
       parameters:
-      - description: Project
+      - description: User
         in: body
-        name: Project
+        name: User
         required: true
         schema:
-          $ref: '#/definitions/model.Project'
+          $ref: '#/definitions/model.UpdateUserSwagger'
       produces:
       - application/json
       responses:
@@ -264,7 +476,78 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.Response'
-      summary: Update project by id.
+      summary: Update user by id.
       tags:
-      - project
+      - user
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Delete user by id.
+      tags:
+      - user
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get user by id.
+      tags:
+      - user
 swagger: "2.0"

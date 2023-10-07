@@ -9,21 +9,21 @@ import (
 	"github.com/google/uuid"
 )
 
-type ProjectInterface interface {
+type ProjectStorageInterface interface {
 	CreateProjectStorage(context.Context, model.Project) error
-	GetProjectStorage(context.Context, model.ProjectQuery) ([]model.Project, error)
+	GetAllProjectStorage(context.Context, model.ProjectQuery) ([]model.Project, error)
 	GetProjectByIDStorage(context.Context, string) (model.Project, error)
 	UpdateProjectByIDStorage(context.Context, model.Project) error
 	DeleteProjectByIDStorage(context.Context, string) error
 }
 
 type Project struct {
-	Storage ProjectInterface
+	Storage ProjectStorageInterface
 }
 
 func (p Project) CreateProjectService(ctx context.Context, project model.Project) error {
 	project.ID = uuid.NewString()
-	project.Date = time.Now().Format("01-2006")
+	project.Created = time.Now().Format("01-2006")
 	project.LastModified = time.Now().Format("01-2006")
 	project.IsActive = true
 
@@ -34,10 +34,10 @@ func (p Project) CreateProjectService(ctx context.Context, project model.Project
 	return nil
 }
 
-func (p Project) GetProjectService(ctx context.Context, query model.ProjectQuery) ([]model.Project, error) {
-	result, err := p.Storage.GetProjectStorage(ctx, query)
+func (p Project) GetAllProjectService(ctx context.Context, query model.ProjectQuery) ([]model.Project, error) {
+	result, err := p.Storage.GetAllProjectStorage(ctx, query)
 	if err != nil {
-		return nil, fmt.Errorf("error occurred in GetProjectStorage: %w", err)
+		return nil, fmt.Errorf("error occurred in GetAllProjectStorage: %w", err)
 	}
 
 	if len(result) < minimalResult {

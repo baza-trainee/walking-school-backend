@@ -11,7 +11,7 @@ import (
 
 type ProjectServiceInterface interface {
 	CreateProjectService(context.Context, model.Project) error
-	GetProjectService(context.Context, model.ProjectQuery) ([]model.Project, error)
+	GetAllProjectService(context.Context, model.ProjectQuery) ([]model.Project, error)
 	GetProjectByIDService(context.Context, string) (model.Project, error)
 	UpdateProjectByIDService(context.Context, model.Project) error
 	DeleteProjectByIDService(context.Context, string) error
@@ -24,6 +24,7 @@ type ProjectServiceInterface interface {
 // @Produce json
 // @Param Project body model.CreateProjectSwagger true "Project"
 // @Success 200 {object} model.Response
+// @Success 201 {object} model.Response
 // @Failure 400 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
@@ -54,8 +55,8 @@ func CreateProjectHandler(s ProjectServiceInterface, log *slog.Logger) fiber.Han
 	}
 }
 
-// @Summary Get project.
-// Description Gets project.
+// @Summary Get all projects.
+// Description Get all projects.
 // @Tags project
 // @Accept json
 // @Produce json
@@ -67,7 +68,7 @@ func CreateProjectHandler(s ProjectServiceInterface, log *slog.Logger) fiber.Han
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
 // @Router /project [get].
-func GetProjectHandler(s ProjectServiceInterface, log *slog.Logger) fiber.Handler {
+func GetAllProjectHandler(s ProjectServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		query := model.ProjectQuery{
 			Limit:  standartLimitValue,
@@ -75,26 +76,26 @@ func GetProjectHandler(s ProjectServiceInterface, log *slog.Logger) fiber.Handle
 		}
 
 		if err := c.QueryParser(&query); err != nil {
-			log.Debug("GetProjectHandler error: ", err.Error())
+			log.Debug("GetAllProjectHandler error: ", err.Error())
 
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 
 		if err := validate.Struct(query); err != nil {
-			log.Debug("GetProjectHandler error: ", err.Error())
+			log.Debug("GetAllProjectHandler error: ", err.Error())
 
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 
-		result, err := s.GetProjectService(c.UserContext(), query)
+		result, err := s.GetAllProjectService(c.UserContext(), query)
 		if err != nil {
 			if errors.Is(err, model.ErrNoContent) {
-				log.Debug("GetProjectService error: ", err.Error())
+				log.Debug("GetAllProjectService error: ", err.Error())
 
 				return fiber.NewError(fiber.StatusNoContent, err.Error())
 			}
 
-			log.Error("GetProjectService error: ", err.Error())
+			log.Error("GetAllProjectService error: ", err.Error())
 			// Какие ошибки могут возвращаться?
 			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 		}
@@ -161,7 +162,7 @@ func GetProjectByIDHandler(s ProjectServiceInterface, log *slog.Logger) fiber.Ha
 // @Failure 404 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /project/{id} [put].
+// @Router /project [put].
 func UpdateProjectByIDHandler(s ProjectServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		project := model.Project{}
