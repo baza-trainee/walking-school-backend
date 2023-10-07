@@ -257,6 +257,42 @@ paths:
       summary: Create project.
       tags:
       - project
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Project
+        in: body
+        name: Project
+        required: true
+        schema:
+          $ref: '#/definitions/model.Project'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Update project by id.
+      tags:
+      - project
   /project/{id}:
     delete:
       consumes:
@@ -326,42 +362,6 @@ paths:
           schema:
             $ref: '#/definitions/model.Response'
       summary: Get project by id.
-      tags:
-      - project
-    put:
-      consumes:
-      - application/json
-      parameters:
-      - description: Project
-        in: body
-        name: Project
-        required: true
-        schema:
-          $ref: '#/definitions/model.Project'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/model.Response'
-        "408":
-          description: Request Timeout
-          schema:
-            $ref: '#/definitions/model.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.Response'
-      summary: Update project by id.
       tags:
       - project
   /user:
@@ -480,6 +480,41 @@ paths:
       tags:
       - user
   /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Delete user by id.
+      tags:
+      - user
     get:
       consumes:
       - application/json

@@ -77,6 +77,7 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Server) {
 	app.Get("/user", timeout.NewWithContext(handler.GetAllUserHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Get("/user/:id", timeout.NewWithContext(handler.GetUserByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Put("/user", timeout.NewWithContext(handler.UpdateUserByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Delete("/user/:id", timeout.NewWithContext(handler.DeleteUserByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 }
 
 func corsConfig() cors.Config {

@@ -13,6 +13,7 @@ type UserStorageInterface interface {
 	GetAllUserStorage(context.Context, model.UserQuery) ([]model.User, error)
 	GetUserByIDStorage(context.Context, string) (model.User, error)
 	UpdateUserByIDStorage(context.Context, model.User) error
+	DeleteUserByIDStorage(context.Context, string) error
 }
 
 type User struct {
@@ -54,6 +55,14 @@ func (u User) GetUserByIDService(ctx context.Context, param string) (model.User,
 func (u User) UpdateUserByIDService(ctx context.Context, user model.User) error {
 	if err := u.Storage.UpdateUserByIDStorage(ctx, user); err != nil {
 		return fmt.Errorf("error occurred in UpdateUserByIDStorage: %w", err)
+	}
+
+	return nil
+}
+
+func (u User) DeleteUserByIDService(ctx context.Context, param string) error {
+	if err := u.Storage.DeleteUserByIDStorage(ctx, param); err != nil {
+		return fmt.Errorf("error occurred in DeleteUserByIDStorage: %w", err)
 	}
 
 	return nil

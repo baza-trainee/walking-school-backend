@@ -91,3 +91,18 @@ func (s Storage) UpdateUserByIDStorage(ctx context.Context, user model.User) err
 
 	return nil
 }
+
+func (s Storage) DeleteUserByIDStorage(ctx context.Context, id string) error {
+	collection := s.DB.Collection(userCollection)
+
+	result, err := collection.DeleteOne(ctx, bson.D{{Key: "_id", Value: id}})
+	if err != nil {
+		return fmt.Errorf("error occurred in DeleteOne: %w", err)
+	}
+
+	if result.DeletedCount != matchedOneDocument {
+		return model.ErrNotFound
+	}
+
+	return nil
+}

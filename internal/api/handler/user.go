@@ -14,6 +14,7 @@ type UserServiceInterface interface {
 	GetAllUserService(context.Context, model.UserQuery) ([]model.User, error)
 	GetUserByIDService(context.Context, string) (model.User, error)
 	UpdateUserByIDService(context.Context, model.User) error
+	DeleteUserByIDService(context.Context, string) error
 }
 
 // @Summary Create user.
@@ -199,6 +200,52 @@ func UpdateUserByIDHandler(s UserServiceInterface, log *slog.Logger) fiber.Handl
 			}
 
 			log.Error("UpdateUserByIDService error: ", err.Error())
+			// Какие ошибки могут возвращаться?
+			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+		}
+
+		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))
+	}
+}
+
+// @Summary Delete user by id.
+// Description Deletes user by id.
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param id path string true "ID"
+// @Success 200 {object} model.Response
+// @Failure 400 {object} model.Response
+// @Failure 404 {object} model.Response
+// @Failure 408 {object} model.Response
+// @Failure 500 {object} model.Response
+// @Router /user/{id} [delete].
+func DeleteUserByIDHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		param := struct {
+			ID string `params:"id" validate:"required,uuid"`
+		}{}
+
+		if err := c.ParamsParser(&param); err != nil {
+			log.Debug("DeleteUserByIDHandler error: ", err.Error())
+
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+
+		if err := validate.Struct(param); err != nil {
+			log.Debug("DeleteUserByIDHandler error: ", err.Error())
+
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+
+		if err := s.DeleteUserByIDService(c.UserContext(), param.ID); err != nil {
+			if errors.Is(err, model.ErrNotFound) {
+				log.Debug("DeleteUserByIDService error: ", err.Error())
+
+				return fiber.NewError(fiber.StatusNotFound, err.Error())
+			}
+
+			log.Error("DeleteUserByIDService error: ", err.Error())
 			// Какие ошибки могут возвращаться?
 			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 		}
