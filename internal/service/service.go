@@ -4,6 +4,7 @@ type StorageInterface interface {
 	ProjectStorageInterface
 	UserStorageInterface
 	HeroStorageInterface
+	ProjSectDescStorageInterface
 }
 
 type Service struct {
@@ -11,6 +12,7 @@ type Service struct {
 	User
 	Partner
 	Hero
+	ProjSectDesc
 }
 
 func NewService(storage StorageInterface) (Service, error) {
@@ -19,5 +21,6 @@ func NewService(storage StorageInterface) (Service, error) {
 		User{Storage: storage},
 		Partner{Storage: storage},
 		Hero{Storage: storage},
+		ProjSectDesc{Storage: storage},
 	}, nil
 }
