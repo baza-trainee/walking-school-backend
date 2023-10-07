@@ -1,5 +1,17 @@
 basePath: /
 definitions:
+  model.CreateHeroSwagger:
+    properties:
+      description:
+        example: some description
+        type: string
+      image:
+        example: stunning image
+        type: string
+      title:
+        example: some title
+        type: string
+    type: object
   model.CreateProjectSwagger:
     properties:
       age_category:
@@ -126,6 +138,21 @@ definitions:
       messsage:
         type: string
     type: object
+  model.UpdateHeroSwagger:
+    properties:
+      description:
+        example: some description
+        type: string
+      id:
+        example: ""
+        type: string
+      image:
+        example: stunning image
+        type: string
+      title:
+        example: some title
+        type: string
+    type: object
   model.UpdateUserSwagger:
     properties:
       combat_certificate:
@@ -138,7 +165,7 @@ definitions:
           type: string
         type: array
       email:
-        example: ""
+        example: example1@gmail.com
         type: string
       id:
         example: ""
@@ -159,7 +186,7 @@ definitions:
         example: ""
         type: string
       phone:
-        example: ""
+        example: "+380631122331"
         type: string
       physical_action_constraints:
         example:
@@ -182,6 +209,184 @@ info:
   title: Walking-School backend API
   version: "1.0"
 paths:
+  /hero:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get all heros.
+      tags:
+      - hero
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Hero
+        in: body
+        name: Hero
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateHeroSwagger'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Create hero .
+      tags:
+      - hero
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Hero
+        in: body
+        name: Hero
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateHeroSwagger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Update hero by id.
+      tags:
+      - hero
+  /hero/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Delete hero by id.
+      tags:
+      - hero
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get hero by id.
+      tags:
+      - hero
   /project:
     get:
       consumes:
@@ -234,10 +439,6 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Response'
         "201":
           description: Created
           schema:
@@ -416,10 +617,6 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Response'
         "201":
           description: Created
           schema:

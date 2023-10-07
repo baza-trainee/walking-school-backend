@@ -23,7 +23,6 @@ type ProjectServiceInterface interface {
 // @Accept json
 // @Produce json
 // @Param Project body model.CreateProjectSwagger true "Project"
-// @Success 200 {object} model.Response
 // @Success 201 {object} model.Response
 // @Failure 400 {object} model.Response
 // @Failure 408 {object} model.Response

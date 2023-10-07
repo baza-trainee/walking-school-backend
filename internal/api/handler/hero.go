@@ -9,51 +9,44 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type UserServiceInterface interface {
-	CreateUserService(context.Context, model.User) error
-	GetAllUserService(context.Context, model.UserQuery) ([]model.User, error)
-	GetUserByIDService(context.Context, string) (model.User, error)
-	UpdateUserByIDService(context.Context, model.User) error
-	DeleteUserByIDService(context.Context, string) error
+type HeroServiceInterface interface {
+	CreateHeroService(context.Context, model.Hero) error
+	GetAllHeroService(context.Context, model.HeroQuery) ([]model.Hero, error)
+	GetHeroByIDService(context.Context, string) (model.Hero, error)
+	UpdateHeroByIDService(context.Context, model.Hero) error
+	DeleteHeroByIDService(context.Context, string) error
 }
 
-// @Summary Create user.
-// Description Creates user.
-// @Tags user
+// @Summary Create hero .
+// Description Creates hero.
+// @Tags hero
 // @Accept json
 // @Produce json
-// @Param User body model.CreateUserSwagger true "User"
+// @Param Hero body model.CreateHeroSwagger true "Hero"
 // @Success 201 {object} model.Response
 // @Failure 400 {object} model.Response
 // @Failure 408 {object} model.Response
-// @Failure 409 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /user [post].
-func CreateUserHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
+// @Router /hero [post].
+func CreateHeroHandler(s HeroServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		user := model.User{}
+		hero := model.Hero{}
 
-		if err := c.BodyParser(&user); err != nil {
-			log.Debug("CreateUserHandler error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusBadRequest, err.Error())
-		}
-
-		if err := UserValidate(validate, user); err != nil {
-			log.Debug("CreateUserHandler error: ", err.Error())
+		if err := c.BodyParser(&hero); err != nil {
+			log.Debug("CreateHeroHandler error: ", err.Error())
 
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 
-		if err := s.CreateUserService(c.UserContext(), user); err != nil {
-			if errors.Is(err, model.ErrConflict) {
-				log.Debug("CreateUserService error: ", err.Error())
+		if err := validate.Struct(hero); err != nil {
+			log.Debug("CreateHeroHandler error: ", err.Error())
 
-				return fiber.NewError(fiber.StatusConflict, err.Error())
-			}
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
 
-			log.Error("CreateUserService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
+		if err := s.CreateHeroService(c.UserContext(), hero); err != nil {
+			log.Error("CreateHeroService error: ", err.Error())
+
 			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 		}
 
@@ -61,9 +54,9 @@ func CreateUserHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
 	}
 }
 
-// @Summary Get all users.
-// Description Get all users.
-// @Tags user
+// @Summary Get all heros.
+// Description Get all heros.
+// @Tags hero
 // @Accept json
 // @Produce json
 // @Param limit query string false "limit"
@@ -73,36 +66,36 @@ func CreateUserHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
 // @Failure 400 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /user [get].
-func GetAllUserHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
+// @Router /hero [get].
+func GetAllHeroHandler(s HeroServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		query := model.UserQuery{
+		query := model.HeroQuery{
 			Limit:  standartLimitValue,
 			Offset: standartOffsetValue,
 		}
 
 		if err := c.QueryParser(&query); err != nil {
-			log.Debug("GetAllUserHandler error: ", err.Error())
+			log.Debug("GetAllHeroHandler error: ", err.Error())
 
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 
 		if err := validate.Struct(query); err != nil {
-			log.Debug("GetAllUserHandler error: ", err.Error())
+			log.Debug("GetAllHeroHandler error: ", err.Error())
 
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 
-		result, err := s.GetAllUserService(c.UserContext(), query)
+		result, err := s.GetAllHeroService(c.UserContext(), query)
 		if err != nil {
 			if errors.Is(err, model.ErrNoContent) {
-				log.Debug("GetAllUserService error: ", err.Error())
+				log.Debug("GetAllHeroService error: ", err.Error())
 
 				return fiber.NewError(fiber.StatusNoContent, err.Error())
 			}
 
-			log.Error("GetAllUserService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
+			log.Error("GetAllHeroService error: ", err.Error())
+
 			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 		}
 
@@ -110,9 +103,9 @@ func GetAllUserHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
 	}
 }
 
-// @Summary Get user by id.
-// Description Gets user by id.
-// @Tags user
+// @Summary Get hero by id.
+// Description Gets hero by id.
+// @Tags hero
 // @Accept json
 // @Produce json
 // @Param id path string true "ID"
@@ -121,35 +114,35 @@ func GetAllUserHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
 // @Failure 404 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /user/{id} [get].
-func GetUserByIDHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
+// @Router /hero/{id} [get].
+func GetHeroByIDHandler(s HeroServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		param := struct {
 			ID string `params:"id" validate:"required,uuid"`
 		}{}
 
 		if err := c.ParamsParser(&param); err != nil {
-			log.Debug("GetUserByIDHandler error: ", err.Error())
+			log.Debug("GetHeroByIDHandler error: ", err.Error())
 
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 
 		if err := validate.Struct(param); err != nil {
-			log.Debug("GetUserByIDHandler error: ", err.Error())
+			log.Debug("GetHeroByIDHandler error: ", err.Error())
 
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 
-		result, err := s.GetUserByIDService(c.UserContext(), param.ID)
+		result, err := s.GetHeroByIDService(c.UserContext(), param.ID)
 		if err != nil {
 			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("GetUserByIDService error: ", err.Error())
+				log.Debug("GetHeroService error: ", err.Error())
 
 				return fiber.NewError(fiber.StatusNotFound, err.Error())
 			}
 
-			log.Error("GetUserByIDService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
+			log.Error("GetHeroService error: ", err.Error())
+
 			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 		}
 
@@ -157,49 +150,43 @@ func GetUserByIDHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler 
 	}
 }
 
-// @Summary Update user by id.
-// Description Updates user by id.
-// @Tags user
+// @Summary Update hero by id.
+// Description Updates hero by id.
+// @Tags hero
 // @Accept json
 // @Produce json
-// @Param User body model.UpdateUserSwagger true "User"
+// @Param Hero body model.UpdateHeroSwagger true "Hero"
 // @Success 200 {object} model.Response
 // @Failure 400 {object} model.Response
 // @Failure 404 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /user [put].
-func UpdateUserByIDHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
+// @Router /hero [put].
+func UpdateHeroByIDHandler(s HeroServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		user := model.User{}
+		hero := model.Hero{}
 
-		if err := c.BodyParser(&user); err != nil {
-			log.Debug("UpdateUserByIDHandler error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusBadRequest, err.Error())
-		}
-
-		if err := UserValidate(validate, user); err != nil {
-			log.Debug("CreateUserHandler error: ", err.Error())
+		if err := c.BodyParser(&hero); err != nil {
+			log.Debug("UpdateHeroByIDHandler error: ", err.Error())
 
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 
-		if err := s.UpdateUserByIDService(c.UserContext(), user); err != nil {
-			if errors.Is(err, model.ErrConflict) {
-				log.Debug("UpdateUserByIDService error: ", err.Error())
+		if err := validate.Struct(hero); err != nil {
+			log.Debug("UpdateHeroByIDHandler error: ", err.Error())
 
-				return fiber.NewError(fiber.StatusConflict, err.Error())
-			}
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
 
+		if err := s.UpdateHeroByIDService(c.UserContext(), hero); err != nil {
 			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("UpdateUserByIDService error: ", err.Error())
+				log.Debug("UpdateHeroByIDService error: ", err.Error())
 
 				return fiber.NewError(fiber.StatusNotFound, err.Error())
 			}
 
-			log.Error("UpdateUserByIDService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
+			log.Error("UpdateHeroByIDService error: ", err.Error())
+
 			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 		}
 
@@ -207,9 +194,9 @@ func UpdateUserByIDHandler(s UserServiceInterface, log *slog.Logger) fiber.Handl
 	}
 }
 
-// @Summary Delete user by id.
-// Description Deletes user by id.
-// @Tags user
+// @Summary Delete hero by id.
+// Description Deletes hero by id.
+// @Tags hero
 // @Accept json
 // @Produce json
 // @Param id path string true "ID"
@@ -218,34 +205,34 @@ func UpdateUserByIDHandler(s UserServiceInterface, log *slog.Logger) fiber.Handl
 // @Failure 404 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /user/{id} [delete].
-func DeleteUserByIDHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
+// @Router /hero/{id} [delete].
+func DeleteHeroByIDHandler(s HeroServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		param := struct {
 			ID string `params:"id" validate:"required,uuid"`
 		}{}
 
 		if err := c.ParamsParser(&param); err != nil {
-			log.Debug("DeleteUserByIDHandler error: ", err.Error())
+			log.Debug("DeleteHeroByIDHandler error: ", err.Error())
 
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 
 		if err := validate.Struct(param); err != nil {
-			log.Debug("DeleteUserByIDHandler error: ", err.Error())
+			log.Debug("DeleteHeroByIDHandler error: ", err.Error())
 
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 
-		if err := s.DeleteUserByIDService(c.UserContext(), param.ID); err != nil {
+		if err := s.DeleteHeroByIDService(c.UserContext(), param.ID); err != nil {
 			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("DeleteUserByIDService error: ", err.Error())
+				log.Debug("DeleteHeroByIDService error: ", err.Error())
 
 				return fiber.NewError(fiber.StatusNotFound, err.Error())
 			}
 
-			log.Error("DeleteUserByIDService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
+			log.Error("DeleteHeroByIDService error: ", err.Error())
+
 			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 		}
 

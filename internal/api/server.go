@@ -78,6 +78,12 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Server) {
 	app.Get("/user/:id", timeout.NewWithContext(handler.GetUserByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Put("/user", timeout.NewWithContext(handler.UpdateUserByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Delete("/user/:id", timeout.NewWithContext(handler.DeleteUserByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+
+	app.Post("/hero", timeout.NewWithContext(handler.CreateHeroHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/hero", timeout.NewWithContext(handler.GetAllHeroHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/hero/:id", timeout.NewWithContext(handler.GetHeroByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Put("/hero", timeout.NewWithContext(handler.UpdateHeroByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Delete("/hero/:id", timeout.NewWithContext(handler.DeleteHeroByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 }
 
 func corsConfig() cors.Config {

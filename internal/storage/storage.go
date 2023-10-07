@@ -17,6 +17,7 @@ const (
 	userCollection        = "User"
 	partnerCollection     = "Partner"
 	contactCollection     = "Contact"
+	heroCollection        = "Hero"
 	walkingSchoolDatabase = "WalkingSchool"
 )
 
