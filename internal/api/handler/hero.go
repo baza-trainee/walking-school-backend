@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 
 	"github.com/baza-trainee/walking-school-backend/internal/model"
@@ -45,9 +44,7 @@ func CreateHeroHandler(s HeroServiceInterface, log *slog.Logger) fiber.Handler {
 		}
 
 		if err := s.CreateHeroService(c.UserContext(), hero); err != nil {
-			log.Error("CreateHeroService error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "CreateHeroService error: ", err)
 		}
 
 		return c.Status(fiber.StatusCreated).JSON(model.SetResponse(fiber.StatusCreated, "created"))
@@ -88,15 +85,7 @@ func GetAllHeroHandler(s HeroServiceInterface, log *slog.Logger) fiber.Handler {
 
 		result, err := s.GetAllHeroService(c.UserContext(), query)
 		if err != nil {
-			if errors.Is(err, model.ErrNoContent) {
-				log.Debug("GetAllHeroService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNoContent, err.Error())
-			}
-
-			log.Error("GetAllHeroService error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "GetAllHeroService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(result)
@@ -135,15 +124,7 @@ func GetHeroByIDHandler(s HeroServiceInterface, log *slog.Logger) fiber.Handler 
 
 		result, err := s.GetHeroByIDService(c.UserContext(), param.ID)
 		if err != nil {
-			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("GetHeroService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNotFound, err.Error())
-			}
-
-			log.Error("GetHeroService error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "GetHeroByIDService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(result)
@@ -179,15 +160,7 @@ func UpdateHeroByIDHandler(s HeroServiceInterface, log *slog.Logger) fiber.Handl
 		}
 
 		if err := s.UpdateHeroByIDService(c.UserContext(), hero); err != nil {
-			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("UpdateHeroByIDService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNotFound, err.Error())
-			}
-
-			log.Error("UpdateHeroByIDService error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "UpdateHeroByIDService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))
@@ -225,15 +198,7 @@ func DeleteHeroByIDHandler(s HeroServiceInterface, log *slog.Logger) fiber.Handl
 		}
 
 		if err := s.DeleteHeroByIDService(c.UserContext(), param.ID); err != nil {
-			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("DeleteHeroByIDService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNotFound, err.Error())
-			}
-
-			log.Error("DeleteHeroByIDService error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "DeleteHeroByIDService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))

@@ -1,5 +1,26 @@
 basePath: /
 definitions:
+  model.CreateContactSwagger:
+    properties:
+      answer_email:
+        example: ""
+        type: string
+      contact_email:
+        example: ""
+        type: string
+      facebook:
+        example: ""
+        type: string
+      linkedin:
+        example: ""
+        type: string
+      phone:
+        example: ""
+        type: string
+      telegram:
+        example: ""
+        type: string
+    type: object
   model.CreateHeroSwagger:
     properties:
       description:
@@ -10,6 +31,21 @@ definitions:
         type: string
       title:
         example: some title
+        type: string
+    type: object
+  model.CreateImageCarouselSwagger:
+    properties:
+      image:
+        example: ""
+        type: string
+    type: object
+  model.CreatePartnerSwagger:
+    properties:
+      image:
+        example: ""
+        type: string
+      title:
+        example: ""
         type: string
     type: object
   model.CreateProjSectDescSwagger:
@@ -144,6 +180,30 @@ definitions:
       messsage:
         type: string
     type: object
+  model.UpdateContactSwagger:
+    properties:
+      answer_email:
+        example: ""
+        type: string
+      contact_email:
+        example: ""
+        type: string
+      facebook:
+        example: ""
+        type: string
+      id:
+        example: ""
+        type: string
+      linkedin:
+        example: ""
+        type: string
+      phone:
+        example: ""
+        type: string
+      telegram:
+        example: ""
+        type: string
+    type: object
   model.UpdateHeroSwagger:
     properties:
       description:
@@ -157,6 +217,21 @@ definitions:
         type: string
       title:
         example: some title
+        type: string
+    type: object
+  model.UpdatePartnerSwagger:
+    properties:
+      created:
+        example: ""
+        type: string
+      id:
+        example: ""
+        type: string
+      image:
+        example: ""
+        type: string
+      title:
+        example: ""
         type: string
     type: object
   model.UpdateProjSectDescSwagger:
@@ -224,6 +299,111 @@ info:
   title: Walking-School backend API
   version: "1.0"
 paths:
+  /contact:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Contact
+        in: body
+        name: Contact
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateContactSwagger'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Create contact .
+      tags:
+      - contact
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Contact
+        in: body
+        name: Contact
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateContactSwagger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Update contact by id.
+      tags:
+      - contact
+  /contact/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get contact by id.
+      tags:
+      - contact
   /hero:
     get:
       consumes:
@@ -402,6 +582,326 @@ paths:
       summary: Get hero by id.
       tags:
       - hero
+  /image-carousel:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get all images.
+      tags:
+      - image carousel
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ImagesCarousel
+        in: body
+        name: ImagesCarousel
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateImageCarouselSwagger'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Create image.
+      tags:
+      - image carousel
+  /image-carousel/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Delete image by id.
+      tags:
+      - image carousel
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get image by id.
+      tags:
+      - image carousel
+  /partner:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get all partners.
+      tags:
+      - partner
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Partner
+        in: body
+        name: Partner
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreatePartnerSwagger'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Create partner .
+      tags:
+      - partner
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Partner
+        in: body
+        name: Partner
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdatePartnerSwagger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Update partner by id.
+      tags:
+      - partner
+  /partner/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Delete partner by id.
+      tags:
+      - partner
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get partner by id.
+      tags:
+      - partner
   /project:
     get:
       consumes:

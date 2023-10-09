@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 
 	"github.com/baza-trainee/walking-school-backend/internal/model"
@@ -45,9 +44,7 @@ func CreateProjectHandler(s ProjectServiceInterface, log *slog.Logger) fiber.Han
 		}
 
 		if err := s.CreateProjectService(c.UserContext(), project); err != nil {
-			log.Error("CreateProjectService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "CreateProjectService error: ", err)
 		}
 
 		return c.Status(fiber.StatusCreated).JSON(model.SetResponse(fiber.StatusCreated, "created"))
@@ -88,15 +85,7 @@ func GetAllProjectHandler(s ProjectServiceInterface, log *slog.Logger) fiber.Han
 
 		result, err := s.GetAllProjectService(c.UserContext(), query)
 		if err != nil {
-			if errors.Is(err, model.ErrNoContent) {
-				log.Debug("GetAllProjectService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNoContent, err.Error())
-			}
-
-			log.Error("GetAllProjectService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "GetAllProjectService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(result)
@@ -135,15 +124,7 @@ func GetProjectByIDHandler(s ProjectServiceInterface, log *slog.Logger) fiber.Ha
 
 		result, err := s.GetProjectByIDService(c.UserContext(), param.ID)
 		if err != nil {
-			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("GetProjectService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNotFound, err.Error())
-			}
-
-			log.Error("GetProjectService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "GetProjectByIDService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(result)
@@ -179,15 +160,7 @@ func UpdateProjectByIDHandler(s ProjectServiceInterface, log *slog.Logger) fiber
 		}
 
 		if err := s.UpdateProjectByIDService(c.UserContext(), project); err != nil {
-			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("UpdateProjectByIDService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNotFound, err.Error())
-			}
-
-			log.Error("UpdateProjectByIDService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "UpdateProjectByIDService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))
@@ -225,15 +198,7 @@ func DeleteProjectByIDHandler(s ProjectServiceInterface, log *slog.Logger) fiber
 		}
 
 		if err := s.DeleteProjectByIDService(c.UserContext(), param.ID); err != nil {
-			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("DeleteProjectByIDService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNotFound, err.Error())
-			}
-
-			log.Error("DeleteProjectByIDService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "DeleteProjectByIDService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))

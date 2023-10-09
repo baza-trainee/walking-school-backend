@@ -12,14 +12,15 @@ import (
 )
 
 const (
-	connectTimeout         = 5 * time.Second
-	projectCollection      = "Project"
-	userCollection         = "User"
-	partnerCollection      = "Partner"
-	contactCollection      = "Contact"
-	heroCollection         = "Hero"
-	projSectDescCollection = "ProjectsSectionDescription"
-	walkingSchoolDatabase  = "WalkingSchool"
+	connectTimeout           = 5 * time.Second
+	projectCollection        = "Project"
+	userCollection           = "User"
+	partnerCollection        = "Partner"
+	contactCollection        = "Contact"
+	heroCollection           = "Hero"
+	projSectDescCollection   = "ProjectsSectionDescription"
+	imagesCarouselCollection = "ImagesCarousel"
+	walkingSchoolDatabase    = "WalkingSchool"
 )
 
 type Storage struct {

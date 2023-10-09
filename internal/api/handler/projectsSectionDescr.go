@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 
 	"github.com/baza-trainee/walking-school-backend/internal/model"
@@ -43,9 +42,7 @@ func CreateProjSectDescHandler(s ProjSectDescServiceInterface, log *slog.Logger)
 		}
 
 		if err := s.CreateProjSectDescService(c.UserContext(), projSectDesc); err != nil {
-			log.Error("CreateProjSectDescService error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "CreateProjSectDescService error: ", err)
 		}
 
 		return c.Status(fiber.StatusCreated).JSON(model.SetResponse(fiber.StatusCreated, "created"))
@@ -84,15 +81,7 @@ func GetProjSectDescByIDHandler(s ProjSectDescServiceInterface, log *slog.Logger
 
 		result, err := s.GetProjSectDescByIDService(c.UserContext(), param.ID)
 		if err != nil {
-			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("GetProjSectDescService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNotFound, err.Error())
-			}
-
-			log.Error("GetProjSectDescService error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "GetProjSectDescByIDService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(result)
@@ -128,15 +117,7 @@ func UpdateProjSectDescByIDHandler(s ProjSectDescServiceInterface, log *slog.Log
 		}
 
 		if err := s.UpdateProjSectDescByIDService(c.UserContext(), projSectDesc); err != nil {
-			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("UpdateProjSectDescByIDService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNotFound, err.Error())
-			}
-
-			log.Error("UpdateProjSectDescByIDService error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "UpdateProjSectDescByIDService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))

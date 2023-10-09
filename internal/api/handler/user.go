@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 
 	"github.com/baza-trainee/walking-school-backend/internal/model"
@@ -46,15 +45,7 @@ func CreateUserHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
 		}
 
 		if err := s.CreateUserService(c.UserContext(), user); err != nil {
-			if errors.Is(err, model.ErrConflict) {
-				log.Debug("CreateUserService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusConflict, err.Error())
-			}
-
-			log.Error("CreateUserService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "CreateUserService error: ", err)
 		}
 
 		return c.Status(fiber.StatusCreated).JSON(model.SetResponse(fiber.StatusCreated, "created"))
@@ -95,15 +86,7 @@ func GetAllUserHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
 
 		result, err := s.GetAllUserService(c.UserContext(), query)
 		if err != nil {
-			if errors.Is(err, model.ErrNoContent) {
-				log.Debug("GetAllUserService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNoContent, err.Error())
-			}
-
-			log.Error("GetAllUserService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "GetAllUserService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(result)
@@ -142,15 +125,7 @@ func GetUserByIDHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler 
 
 		result, err := s.GetUserByIDService(c.UserContext(), param.ID)
 		if err != nil {
-			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("GetUserByIDService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNotFound, err.Error())
-			}
-
-			log.Error("GetUserByIDService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "GetUserByIDService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(result)
@@ -186,21 +161,7 @@ func UpdateUserByIDHandler(s UserServiceInterface, log *slog.Logger) fiber.Handl
 		}
 
 		if err := s.UpdateUserByIDService(c.UserContext(), user); err != nil {
-			if errors.Is(err, model.ErrConflict) {
-				log.Debug("UpdateUserByIDService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusConflict, err.Error())
-			}
-
-			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("UpdateUserByIDService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNotFound, err.Error())
-			}
-
-			log.Error("UpdateUserByIDService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "UpdateUserByIDService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))
@@ -238,15 +199,7 @@ func DeleteUserByIDHandler(s UserServiceInterface, log *slog.Logger) fiber.Handl
 		}
 
 		if err := s.DeleteUserByIDService(c.UserContext(), param.ID); err != nil {
-			if errors.Is(err, model.ErrNotFound) {
-				log.Debug("DeleteUserByIDService error: ", err.Error())
-
-				return fiber.NewError(fiber.StatusNotFound, err.Error())
-			}
-
-			log.Error("DeleteUserByIDService error: ", err.Error())
-			// Какие ошибки могут возвращаться?
-			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+			return handleError(log, "DeleteUserByIDService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))

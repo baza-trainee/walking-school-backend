@@ -1,16 +1,23 @@
 package storage
 
 import (
+	"errors"
+	"fmt"
+	"strings"
+
+	"github.com/baza-trainee/walking-school-backend/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const (
-	matchedOneDocument = 1
+	matchedOneDocument      = 1
+	contextDeadlineExceeded = "context deadline exceeded"
 )
 
-func LimitAndOffset(limit, offset int) *options.FindOptions {
+func limitAndOffset(limit, offset int) *options.FindOptions {
 	findOptions := options.Find()
 	findOptions.SetLimit(int64(limit))
 	findOptions.SetSkip(int64(offset))
@@ -66,4 +73,42 @@ func updateFilter(id, phone, email string) primitive.D {
 			}},
 		}
 	}
+}
+
+func handleError(message string, err error) error {
+	mce := new(mongo.CommandError)
+
+	if errors.As(err, &mce) && strings.Contains(mce.Message, contextDeadlineExceeded) {
+		return model.ErrRequestTimeout
+	}
+
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		return model.ErrNotFound
+	}
+
+	return fmt.Errorf("%s: %w", message, err)
+}
+
+func handleUpdateByIDError(result *mongo.UpdateResult, message string, err error) error {
+	if err != nil {
+		handleError(message, err)
+	}
+
+	if result.MatchedCount != matchedOneDocument {
+		return model.ErrNotFound
+	}
+
+	return nil
+}
+
+func handleDeleteByIDError(result *mongo.DeleteResult, message string, err error) error {
+	if err != nil {
+		handleError(message, err)
+	}
+
+	if result.DeletedCount != matchedOneDocument {
+		return model.ErrNotFound
+	}
+
+	return nil
 }
