@@ -84,6 +84,25 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Server) {
 	app.Get("/hero/:id", timeout.NewWithContext(handler.GetHeroByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Put("/hero", timeout.NewWithContext(handler.UpdateHeroByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Delete("/hero/:id", timeout.NewWithContext(handler.DeleteHeroByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+
+	app.Post("/projects-section-description", timeout.NewWithContext(handler.CreateProjSectDescHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/projects-section-description/:id", timeout.NewWithContext(handler.GetProjSectDescByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Put("/projects-section-description", timeout.NewWithContext(handler.UpdateProjSectDescByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+
+	app.Post("/image-carousel", timeout.NewWithContext(handler.CreateImagesCarouselHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/image-carousel", timeout.NewWithContext(handler.GetAllImagesCarouselHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/image-carousel/:id", timeout.NewWithContext(handler.GetImagesCarouselByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Delete("/image-carousel/:id", timeout.NewWithContext(handler.DeleteImagesCarouselByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+
+	app.Post("/partner", timeout.NewWithContext(handler.CreatePartnerHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/partner", timeout.NewWithContext(handler.GetAllPartnerHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/partner/:id", timeout.NewWithContext(handler.GetPartnerByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Put("/partner", timeout.NewWithContext(handler.UpdatePartnerByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Delete("/partner/:id", timeout.NewWithContext(handler.DeletePartnerByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+
+	app.Post("/contact", timeout.NewWithContext(handler.CreateContactHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/contact/:id", timeout.NewWithContext(handler.GetContactByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Put("/contact", timeout.NewWithContext(handler.UpdateContactByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 }
 
 func corsConfig() cors.Config {

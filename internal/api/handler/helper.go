@@ -2,9 +2,11 @@ package handler
 
 import (
 	"errors"
+	"log/slog"
 
 	"github.com/baza-trainee/walking-school-backend/internal/model"
 	"github.com/go-playground/validator"
+	"github.com/gofiber/fiber/v2"
 )
 
 var validate = validator.New() //nolint
@@ -24,4 +26,29 @@ func UserValidate(validate *validator.Validate, user model.User) error {
 	}
 
 	return nil
+}
+
+func handleError(log *slog.Logger, message string, err error) error {
+	switch {
+	case errors.Is(err, model.ErrRequestTimeout):
+		log.Debug(message, err.Error())
+
+		return fiber.NewError(fiber.StatusRequestTimeout, err.Error())
+	case errors.Is(err, model.ErrConflict):
+		log.Debug(message, err.Error())
+
+		return fiber.NewError(fiber.StatusConflict, err.Error())
+	case errors.Is(err, model.ErrNotFound):
+		log.Debug(message, err.Error())
+
+		return fiber.NewError(fiber.StatusNotFound, err.Error())
+	case errors.Is(err, model.ErrNoContent):
+		log.Debug(message, err.Error())
+
+		return fiber.NewError(fiber.StatusNoContent, err.Error())
+	default:
+		log.Error(message, err.Error())
+
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
 }

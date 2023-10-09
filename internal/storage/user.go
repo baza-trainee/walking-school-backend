@@ -2,12 +2,10 @@ package storage
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/baza-trainee/walking-school-backend/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func (s Storage) CreateUsertStorage(ctx context.Context, user model.User) error {
@@ -19,8 +17,7 @@ func (s Storage) CreateUsertStorage(ctx context.Context, user model.User) error 
 
 	_, err := collection.InsertOne(ctx, user)
 	if err != nil {
-		// Какие ошибки могут возвращаться?
-		return fmt.Errorf("error occurred in InsertOne: %w", err)
+		return handleError("error occurred in InsertOne", err)
 	}
 
 	return nil
@@ -31,10 +28,9 @@ func (s Storage) GetAllUserStorage(ctx context.Context, query model.UserQuery) (
 
 	result := make([]model.User, 0)
 
-	cursor, err := collection.Find(ctx, bson.D{}, LimitAndOffset(query.Limit, query.Offset))
+	cursor, err := collection.Find(ctx, bson.D{}, limitAndOffset(query.Limit, query.Offset))
 	if err != nil {
-		// Какие ошибки могут возвращаться?
-		return nil, fmt.Errorf("error occurred in Find: %w", err)
+		return nil, handleError("error occurred in Find", err)
 	}
 
 	defer cursor.Close(ctx)
@@ -63,11 +59,7 @@ func (s Storage) GetUserByIDStorage(ctx context.Context, id string) (model.User,
 	user := model.User{}
 
 	if err := collection.FindOne(ctx, bson.D{{Key: "_id", Value: id}}).Decode(&user); err != nil {
-		if errors.Is(err, mongo.ErrNoDocuments) {
-			return model.User{}, model.ErrNotFound
-		}
-
-		return model.User{}, fmt.Errorf("error occurred in FindOne: %w", err)
+		return model.User{}, handleError("error occurred in FindOne", err)
 	}
 
 	return user, nil
@@ -81,28 +73,14 @@ func (s Storage) UpdateUserByIDStorage(ctx context.Context, user model.User) err
 	}
 
 	result, err := collection.ReplaceOne(ctx, bson.D{{Key: "_id", Value: user.ID}}, user)
-	if err != nil {
-		return fmt.Errorf("error occurred in ReplaceOne: %w", err)
-	}
 
-	if result.MatchedCount != matchedOneDocument {
-		return model.ErrNotFound
-	}
-
-	return nil
+	return handleUpdateByIDError(result, "error occurred in ReplaceOne", err)
 }
 
 func (s Storage) DeleteUserByIDStorage(ctx context.Context, id string) error {
 	collection := s.DB.Collection(userCollection)
 
 	result, err := collection.DeleteOne(ctx, bson.D{{Key: "_id", Value: id}})
-	if err != nil {
-		return fmt.Errorf("error occurred in DeleteOne: %w", err)
-	}
 
-	if result.DeletedCount != matchedOneDocument {
-		return model.ErrNotFound
-	}
-
-	return nil
+	return handleDeleteByIDError(result, "error occurred in DeleteOne", err)
 }
