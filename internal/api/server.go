@@ -101,13 +101,13 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Server) {
 	app.Delete("/partner/:id", timeout.NewWithContext(handler.DeletePartnerByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 
 	app.Post("/contact", timeout.NewWithContext(handler.CreateContactHandler(s.Service, s.Log), cfg.AppWriteTimeout))
-	app.Get("/contact/:id", timeout.NewWithContext(handler.GetContactByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/contact", timeout.NewWithContext(handler.GetAllContactHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Put("/contact", timeout.NewWithContext(handler.UpdateContactByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 }
 
 func corsConfig() cors.Config {
 	return cors.Config{
-		// AllowOrigins:     `https://walking-school-backend.com`,
+		// AllowOrigins:     `localhost:3000`, `https://<<<walking-school-backend.com>>>`,
 		AllowOrigins:     `*`,
 		AllowHeaders:     "Origin, Content-Type, Accept, Access-Control-Allow-Credentials",
 		AllowMethods:     "GET, POST, PUT, DELETE",
