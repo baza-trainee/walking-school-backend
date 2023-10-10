@@ -3,11 +3,22 @@ version: "3"
 dotenv: [".env"]
 
 tasks:
-  run:
-    env:
-      DB_HOST: localhost
+  build:
     cmds:
-      # - docker compose -f postgres.yml up -d
+      - docker compose -f mongo.yml up -d
+      - docker compose -f walking-school.yml up -d --build
+
+  stop:
+    cmds:
+      - docker compose -f mongo.yml down
+      - docker compose -f walking-school.yml down
+
+  run:
+    # env:
+    #   DB_HOST: localhost
+    cmds:
+      # - docker compose -f mongo.yml up -d
+      # - docker compose -f walking-school.yml up -d
       - go run cmd/main.go
   
   swaginit:

@@ -10,7 +10,7 @@ import (
 
 type ContactStorageInterface interface {
 	CreateContactStorage(context.Context, model.Contact) error
-	GetContactByIDStorage(context.Context, string) (model.Contact, error)
+	GetAllContactStorage(context.Context) ([]model.Contact, error)
 	UpdateContactByIDStorage(context.Context, model.Contact) error
 }
 
@@ -28,10 +28,10 @@ func (c Contact) CreateContactService(ctx context.Context, contact model.Contact
 	return nil
 }
 
-func (c Contact) GetContactByIDService(ctx context.Context, param string) (model.Contact, error) {
-	result, err := c.Storage.GetContactByIDStorage(ctx, param)
+func (c Contact) GetAllContactService(ctx context.Context) ([]model.Contact, error) {
+	result, err := c.Storage.GetAllContactStorage(ctx)
 	if err != nil {
-		return model.Contact{}, fmt.Errorf("error occurred in GetContactByIDStorage: %w", err)
+		return nil, fmt.Errorf("error occurred in GetAllContactStorage: %w", err)
 	}
 
 	return result, nil

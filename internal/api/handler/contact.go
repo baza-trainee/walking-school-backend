@@ -10,7 +10,7 @@ import (
 
 type ContactServiceInterface interface {
 	CreateContactService(context.Context, model.Contact) error
-	GetContactByIDService(context.Context, string) (model.Contact, error)
+	GetAllContactService(context.Context) ([]model.Contact, error)
 	UpdateContactByIDService(context.Context, model.Contact) error
 }
 
@@ -49,39 +49,21 @@ func CreateContactHandler(s ContactServiceInterface, log *slog.Logger) fiber.Han
 	}
 }
 
-// @Summary Get contact by id.
-// Description Gets contact by id.
+// @Summary Get contact.
+// Description Ge contacts.
 // @Tags contact
-// @Accept json
 // @Produce json
-// @Param id path string true "ID"
 // @Success 200 {object} model.Response
 // @Failure 400 {object} model.Response
 // @Failure 404 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /contact/{id} [get].
-func GetContactByIDHandler(s ContactServiceInterface, log *slog.Logger) fiber.Handler {
+// @Router /contact [get].
+func GetAllContactHandler(s ContactServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		param := struct {
-			ID string `params:"id" validate:"required,uuid"`
-		}{}
-
-		if err := c.ParamsParser(&param); err != nil {
-			log.Debug("GetContactByIDHandler error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusBadRequest, err.Error())
-		}
-
-		if err := validate.Struct(param); err != nil {
-			log.Debug("GetContactByIDHandler error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusBadRequest, err.Error())
-		}
-
-		result, err := s.GetContactByIDService(c.UserContext(), param.ID)
+		result, err := s.GetAllContactService(c.UserContext())
 		if err != nil {
-			return handleError(log, "GetContactByIDService error: ", err)
+			return handleError(log, "GetAllContactService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(result)
