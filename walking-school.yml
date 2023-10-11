@@ -9,15 +9,10 @@ services:
       ports:
         - ${APP_PORT}:${APP_PORT}
       networks:
-        - mongo-net
-        - client-server-net 
+        - localnet
       restart: unless-stopped
     
 networks:
-  mongo-net:
-    external: true
-    name: mongo-net
-
-  client-server-net:
-    external: true
-    name: client-server-net
+  localnet:
+    driver: bridge
+    name: localnet

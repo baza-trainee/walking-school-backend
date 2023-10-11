@@ -5,7 +5,6 @@ dotenv: [".env"]
 tasks:
   build:
     cmds:
-      - docker compose -f mongo.yml up -d
       - docker compose -f walking-school.yml up -d --build
 
   stop:
@@ -17,7 +16,6 @@ tasks:
     # env:
     #   DB_HOST: localhost
     cmds:
-      # - docker compose -f mongo.yml up -d
       # - docker compose -f walking-school.yml up -d
       - go run cmd/main.go
   
