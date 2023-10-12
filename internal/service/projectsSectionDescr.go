@@ -10,7 +10,7 @@ import (
 
 type ProjSectDescStorageInterface interface {
 	CreateProjSectDescStorage(context.Context, model.ProjSectDesc) error
-	GetProjSectDescByIDStorage(context.Context, string) (model.ProjSectDesc, error)
+	GetAllProjSectDescStorage(context.Context) ([]model.ProjSectDesc, error)
 	UpdateProjSectDescByIDStorage(context.Context, model.ProjSectDesc) error
 }
 
@@ -28,10 +28,14 @@ func (psd ProjSectDesc) CreateProjSectDescService(ctx context.Context, projSectD
 	return nil
 }
 
-func (psd ProjSectDesc) GetProjSectDescByIDService(ctx context.Context, param string) (model.ProjSectDesc, error) {
-	result, err := psd.Storage.GetProjSectDescByIDStorage(ctx, param)
+func (psd ProjSectDesc) GetAllProjSectDescService(ctx context.Context) ([]model.ProjSectDesc, error) {
+	result, err := psd.Storage.GetAllProjSectDescStorage(ctx)
 	if err != nil {
-		return model.ProjSectDesc{}, fmt.Errorf("error occurred in GetProjSectDescByIDStorage: %w", err)
+		return nil, fmt.Errorf("error occurred in GetAllProjSectDescStorage: %w", err)
+	}
+
+	if len(result) < minimalResult {
+		return []model.ProjSectDesc{}, model.ErrNoContent
 	}
 
 	return result, nil

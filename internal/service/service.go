@@ -8,6 +8,7 @@ type StorageInterface interface {
 	PartnerStorageInterface
 	ImagesCarouselStorageInterface
 	ContactStorageInterface
+	FeedbackStorageInterface
 }
 
 type Service struct {
@@ -18,6 +19,7 @@ type Service struct {
 	ProjSectDesc
 	ImagesCarousel
 	Contact
+	Feedback
 }
 
 func NewService(storage StorageInterface) (Service, error) {
@@ -29,5 +31,6 @@ func NewService(storage StorageInterface) (Service, error) {
 		ProjSectDesc{Storage: storage},
 		ImagesCarousel{Storage: storage},
 		Contact{Storage: storage},
+		Feedback{Storage: storage},
 	}, nil
 }

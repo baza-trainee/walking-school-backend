@@ -86,7 +86,7 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Server) {
 	app.Delete("/hero/:id", timeout.NewWithContext(handler.DeleteHeroByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 
 	app.Post("/projects-section-description", timeout.NewWithContext(handler.CreateProjSectDescHandler(s.Service, s.Log), cfg.AppWriteTimeout))
-	app.Get("/projects-section-description/:id", timeout.NewWithContext(handler.GetProjSectDescByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/projects-section-description", timeout.NewWithContext(handler.GetAllProjSectDescHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Put("/projects-section-description", timeout.NewWithContext(handler.UpdateProjSectDescByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 
 	app.Post("/image-carousel", timeout.NewWithContext(handler.CreateImagesCarouselHandler(s.Service, s.Log), cfg.AppWriteTimeout))
@@ -103,6 +103,8 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Server) {
 	app.Post("/contact", timeout.NewWithContext(handler.CreateContactHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Get("/contact", timeout.NewWithContext(handler.GetAllContactHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Put("/contact", timeout.NewWithContext(handler.UpdateContactByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+
+	app.Post("/feedback", timeout.NewWithContext(handler.CreateFeedbackHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 }
 
 func corsConfig() cors.Config {

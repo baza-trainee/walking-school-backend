@@ -10,7 +10,7 @@ import (
 
 type ProjSectDescServiceInterface interface {
 	CreateProjSectDescService(context.Context, model.ProjSectDesc) error
-	GetProjSectDescByIDService(context.Context, string) (model.ProjSectDesc, error)
+	GetAllProjSectDescService(context.Context) ([]model.ProjSectDesc, error)
 	UpdateProjSectDescByIDService(context.Context, model.ProjSectDesc) error
 }
 
@@ -49,39 +49,22 @@ func CreateProjSectDescHandler(s ProjSectDescServiceInterface, log *slog.Logger)
 	}
 }
 
-// @Summary Get projects section description by id.
-// Description Get projects section description by id.
+// @Summary Get all projects section description.
+// Description Get all projects section description.
 // @Tags projects section description
-// @Accept json
 // @Produce json
-// @Param id path string true "ID"
 // @Success 200 {object} model.Response
+// @Success 204 {object} model.Response
 // @Failure 400 {object} model.Response
 // @Failure 404 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /projects-section-description/{id} [get].
-func GetProjSectDescByIDHandler(s ProjSectDescServiceInterface, log *slog.Logger) fiber.Handler {
+// @Router /projects-section-description [get].
+func GetAllProjSectDescHandler(s ProjSectDescServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		param := struct {
-			ID string `params:"id" validate:"required,uuid"`
-		}{}
-
-		if err := c.ParamsParser(&param); err != nil {
-			log.Debug("GetProjSectDescByIDHandler error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusBadRequest, err.Error())
-		}
-
-		if err := validate.Struct(param); err != nil {
-			log.Debug("GetProjSectDescByIDHandler error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusBadRequest, err.Error())
-		}
-
-		result, err := s.GetProjSectDescByIDService(c.UserContext(), param.ID)
+		result, err := s.GetAllProjSectDescService(c.UserContext())
 		if err != nil {
-			return handleError(log, "GetProjSectDescByIDService error: ", err)
+			return handleError(log, "GetAllProjSectDescService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(result)

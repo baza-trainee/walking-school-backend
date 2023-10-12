@@ -9,7 +9,6 @@ tasks:
 
   stop:
     cmds:
-      - docker compose -f mongo.yml down
       - docker compose -f walking-school.yml down
 
   run:

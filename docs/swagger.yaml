@@ -21,6 +21,24 @@ definitions:
         example: ""
         type: string
     type: object
+  model.CreateFeedbackSwagger:
+    properties:
+      email:
+        example: ""
+        type: string
+      name:
+        example: ""
+        type: string
+      phone:
+        example: ""
+        type: string
+      surname:
+        example: ""
+        type: string
+      text:
+        example: ""
+        type: string
+    type: object
   model.CreateHeroSwagger:
     properties:
       description:
@@ -308,6 +326,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.Response'
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/model.Response'
         "400":
           description: Bad Request
           schema:
@@ -324,7 +346,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.Response'
-      summary: Get contact.
+      summary: Get all contacts.
       tags:
       - contact
     post:
@@ -395,6 +417,39 @@ paths:
       summary: Update contact by id.
       tags:
       - contact
+  /feedback:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Feedback
+        in: body
+        name: Feedback
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateFeedbackSwagger'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Create feedback.
+      tags:
+      - feedback
   /hero:
     get:
       consumes:
@@ -463,7 +518,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.Response'
-      summary: Create hero .
+      summary: Create hero.
       tags:
       - hero
     put:
@@ -1072,6 +1127,37 @@ paths:
       tags:
       - project
   /projects-section-description:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get all projects section description.
+      tags:
+      - projects section description
     post:
       consumes:
       - application/json
@@ -1138,42 +1224,6 @@ paths:
           schema:
             $ref: '#/definitions/model.Response'
       summary: Update projects section description by id.
-      tags:
-      - projects section description
-  /projects-section-description/{id}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/model.Response'
-        "408":
-          description: Request Timeout
-          schema:
-            $ref: '#/definitions/model.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.Response'
-      summary: Get projects section description by id.
       tags:
       - projects section description
   /user:

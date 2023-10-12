@@ -34,6 +34,10 @@ func (c Contact) GetAllContactService(ctx context.Context) ([]model.Contact, err
 		return nil, fmt.Errorf("error occurred in GetAllContactStorage: %w", err)
 	}
 
+	if len(result) < minimalResult {
+		return []model.Contact{}, model.ErrNoContent
+	}
+
 	return result, nil
 }
 

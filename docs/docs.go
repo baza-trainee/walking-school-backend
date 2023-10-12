@@ -26,10 +26,16 @@ const docTemplate = `{
                 "tags": [
                     "contact"
                 ],
-                "summary": "Get contact.",
+                "summary": "Get all contacts.",
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "204": {
+                        "description": "No Content",
                         "schema": {
                             "$ref": "#/definitions/model.Response"
                         }
@@ -134,6 +140,57 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/model.CreateContactSwagger"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "408": {
+                        "description": "Request Timeout",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/feedback": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feedback"
+                ],
+                "summary": "Create feedback.",
+                "parameters": [
+                    {
+                        "description": "Feedback",
+                        "name": "Feedback",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateFeedbackSwagger"
                         }
                     }
                 ],
@@ -289,7 +346,7 @@ const docTemplate = `{
                 "tags": [
                     "hero"
                 ],
-                "summary": "Create hero .",
+                "summary": "Create hero.",
                 "parameters": [
                     {
                         "description": "Hero",
@@ -1199,6 +1256,53 @@ const docTemplate = `{
             }
         },
         "/projects-section-description": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects section description"
+                ],
+                "summary": "Get all projects section description.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "408": {
+                        "description": "Request Timeout",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            },
             "put": {
                 "consumes": [
                     "application/json"
@@ -1285,61 +1389,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/model.Response"
-                        }
-                    },
-                    "408": {
-                        "description": "Request Timeout",
-                        "schema": {
-                            "$ref": "#/definitions/model.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/projects-section-description/{id}": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "projects section description"
-                ],
-                "summary": "Get projects section description by id.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/model.Response"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/model.Response"
                         }
@@ -1663,6 +1712,31 @@ const docTemplate = `{
                     "example": ""
                 },
                 "telegram": {
+                    "type": "string",
+                    "example": ""
+                }
+            }
+        },
+        "model.CreateFeedbackSwagger": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": ""
+                },
+                "name": {
+                    "type": "string",
+                    "example": ""
+                },
+                "phone": {
+                    "type": "string",
+                    "example": ""
+                },
+                "surname": {
+                    "type": "string",
+                    "example": ""
+                },
+                "text": {
                     "type": "string",
                     "example": ""
                 }

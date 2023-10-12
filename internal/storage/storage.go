@@ -21,6 +21,7 @@ const (
 	projSectDescCollection   = "ProjectsSectionDescription"
 	imagesCarouselCollection = "ImagesCarousel"
 	walkingSchoolDatabase    = "WalkingSchool"
+	feedbackCollection       = "Feedback"
 	connectionString         = "mongodb+srv://%s:%s@%s.fqu5xkh.mongodb.net/"
 )
 
