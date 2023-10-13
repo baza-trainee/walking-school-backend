@@ -171,7 +171,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/feedback": {
+        "/form": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -180,23 +180,23 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "feedback"
+                    "form"
                 ],
-                "summary": "Create feedback.",
+                "summary": "Create form.",
                 "parameters": [
                     {
-                        "description": "Feedback",
-                        "name": "Feedback",
+                        "description": "Form",
+                        "name": "Form",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.CreateFeedbackSwagger"
+                            "$ref": "#/definitions/model.CreateFormSwagger"
                         }
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Response"
                         }
@@ -496,9 +496,6 @@ const docTemplate = `{
         },
         "/image-carousel": {
             "get": {
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -506,20 +503,6 @@ const docTemplate = `{
                     "image carousel"
                 ],
                 "summary": "Get all images.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "offset",
-                        "name": "offset",
-                        "in": "query"
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -529,6 +512,55 @@ const docTemplate = `{
                     },
                     "204": {
                         "description": "No Content",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "408": {
+                        "description": "Request Timeout",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "image carousel"
+                ],
+                "summary": "Update images carousel by id.",
+                "parameters": [
+                    {
+                        "description": "ImagesCarousel",
+                        "name": "ImagesCarousel",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateImageCarouselSwagger"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Response"
                         }
@@ -604,59 +636,6 @@ const docTemplate = `{
             }
         },
         "/image-carousel/{id}": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "image carousel"
-                ],
-                "summary": "Get image by id.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/model.Response"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/model.Response"
-                        }
-                    },
-                    "408": {
-                        "description": "Request Timeout",
-                        "schema": {
-                            "$ref": "#/definitions/model.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.Response"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "consumes": [
                     "application/json"
@@ -1717,7 +1696,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.CreateFeedbackSwagger": {
+        "model.CreateFormSwagger": {
             "type": "object",
             "properties": {
                 "email": {
@@ -1763,8 +1742,13 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "image": {
-                    "type": "string",
-                    "example": ""
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        ""
+                    ]
                 }
             }
         },
@@ -2017,6 +2001,24 @@ const docTemplate = `{
                 "title": {
                     "type": "string",
                     "example": "some title"
+                }
+            }
+        },
+        "model.UpdateImageCarouselSwagger": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": ""
+                },
+                "image": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        ""
+                    ]
                 }
             }
         },

@@ -19,12 +19,12 @@ func (s Storage) CreateImagesCarouselStorage(ctx context.Context, imagesCarousel
 	return nil
 }
 
-func (s Storage) GetAllImagesCarouselStorage(ctx context.Context, query model.ImageCarouselQuery) ([]model.ImageCarousel, error) {
+func (s Storage) GetAllImagesCarouselStorage(ctx context.Context) ([]model.ImageCarousel, error) {
 	collection := s.DB.Collection(imagesCarouselCollection)
 
 	result := make([]model.ImageCarousel, 0)
 
-	cursor, err := collection.Find(ctx, bson.D{}, limitAndOffset(query.Limit, query.Offset))
+	cursor, err := collection.Find(ctx, bson.D{})
 	if err != nil {
 		return nil, handleError("error occurred in Find", err)
 	}
@@ -48,16 +48,12 @@ func (s Storage) GetAllImagesCarouselStorage(ctx context.Context, query model.Im
 	return result, nil
 }
 
-func (s Storage) GetImagesCarouselByIDStorage(ctx context.Context, id string) (model.ImageCarousel, error) {
+func (s Storage) UpdateImagesCarouselByIDStorage(ctx context.Context, imagesCarousel model.ImageCarousel) error {
 	collection := s.DB.Collection(imagesCarouselCollection)
 
-	imagesCarousel := model.ImageCarousel{}
+	result, err := collection.ReplaceOne(ctx, bson.D{{Key: "_id", Value: imagesCarousel.ID}}, imagesCarousel)
 
-	if err := collection.FindOne(ctx, bson.D{{Key: "_id", Value: id}}).Decode(&imagesCarousel); err != nil {
-		return model.ImageCarousel{}, handleError("error occurred in FindOne", err)
-	}
-
-	return imagesCarousel, nil
+	return handleUpdateByIDError(result, "error occurred in ReplaceOne", err)
 }
 
 func (s Storage) DeleteImagesCarouselByIDStorage(ctx context.Context, id string) error {

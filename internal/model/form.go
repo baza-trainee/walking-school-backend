@@ -1,6 +1,6 @@
 package model
 
-type CreateFeedbackSwagger struct {
+type CreateFormSwagger struct {
 	Name    string `json:"" example:""`
 	Surname string `json:"" example:""`
 	Email   string `json:"" example:""`
@@ -8,7 +8,7 @@ type CreateFeedbackSwagger struct {
 	Text    string `json:"" example:""`
 }
 
-type Feedback struct {
+type Form struct {
 	ID      string `json:"id" bson:"_id"`
 	Name    string `json:"name" bson:"name" validate:"required"`
 	Surname string `json:"surname" bson:"surname" validate:"required"`

@@ -21,7 +21,7 @@ definitions:
         example: ""
         type: string
     type: object
-  model.CreateFeedbackSwagger:
+  model.CreateFormSwagger:
     properties:
       email:
         example: ""
@@ -54,8 +54,11 @@ definitions:
   model.CreateImageCarouselSwagger:
     properties:
       image:
-        example: ""
-        type: string
+        example:
+        - ""
+        items:
+          type: string
+        type: array
     type: object
   model.CreatePartnerSwagger:
     properties:
@@ -237,6 +240,18 @@ definitions:
         example: some title
         type: string
     type: object
+  model.UpdateImageCarouselSwagger:
+    properties:
+      id:
+        example: ""
+        type: string
+      image:
+        example:
+        - ""
+        items:
+          type: string
+        type: array
+    type: object
   model.UpdatePartnerSwagger:
     properties:
       created:
@@ -417,22 +432,22 @@ paths:
       summary: Update contact by id.
       tags:
       - contact
-  /feedback:
+  /form:
     post:
       consumes:
       - application/json
       parameters:
-      - description: Feedback
+      - description: Form
         in: body
-        name: Feedback
+        name: Form
         required: true
         schema:
-          $ref: '#/definitions/model.CreateFeedbackSwagger'
+          $ref: '#/definitions/model.CreateFormSwagger'
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
             $ref: '#/definitions/model.Response'
         "400":
@@ -447,9 +462,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.Response'
-      summary: Create feedback.
+      summary: Create form.
       tags:
-      - feedback
+      - form
   /hero:
     get:
       consumes:
@@ -630,17 +645,6 @@ paths:
       - hero
   /image-carousel:
     get:
-      consumes:
-      - application/json
-      parameters:
-      - description: limit
-        in: query
-        name: limit
-        type: string
-      - description: offset
-        in: query
-        name: offset
-        type: string
       produces:
       - application/json
       responses:
@@ -699,6 +703,38 @@ paths:
       summary: Create image.
       tags:
       - image carousel
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ImagesCarousel
+        in: body
+        name: ImagesCarousel
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateImageCarouselSwagger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Update images carousel by id.
+      tags:
+      - image carousel
   /image-carousel/{id}:
     delete:
       consumes:
@@ -733,41 +769,6 @@ paths:
           schema:
             $ref: '#/definitions/model.Response'
       summary: Delete image by id.
-      tags:
-      - image carousel
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/model.Response'
-        "408":
-          description: Request Timeout
-          schema:
-            $ref: '#/definitions/model.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.Response'
-      summary: Get image by id.
       tags:
       - image carousel
   /partner:

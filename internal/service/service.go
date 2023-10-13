@@ -1,5 +1,9 @@
 package service
 
+import (
+	"github.com/baza-trainee/walking-school-backend/internal/config"
+)
+
 type StorageInterface interface {
 	ProjectStorageInterface
 	UserStorageInterface
@@ -8,7 +12,6 @@ type StorageInterface interface {
 	PartnerStorageInterface
 	ImagesCarouselStorageInterface
 	ContactStorageInterface
-	FeedbackStorageInterface
 }
 
 type Service struct {
@@ -22,7 +25,7 @@ type Service struct {
 	Feedback
 }
 
-func NewService(storage StorageInterface) (Service, error) {
+func NewService(storage StorageInterface, cfg config.Form) (Service, error) {
 	return Service{
 		Project{Storage: storage},
 		User{Storage: storage},
@@ -31,6 +34,6 @@ func NewService(storage StorageInterface) (Service, error) {
 		ProjSectDesc{Storage: storage},
 		ImagesCarousel{Storage: storage},
 		Contact{Storage: storage},
-		Feedback{Storage: storage},
+		Feedback{Cfg: cfg},
 	}, nil
 }

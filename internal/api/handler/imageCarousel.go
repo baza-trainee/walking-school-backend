@@ -10,8 +10,8 @@ import (
 
 type ImagesCarouselServiceInterface interface {
 	CreateImagesCarouselService(context.Context, model.ImageCarousel) error
-	GetAllImagesCarouselService(context.Context, model.ImageCarouselQuery) ([]model.ImageCarousel, error)
-	GetImagesCarouselByIDService(context.Context, string) (model.ImageCarousel, error)
+	GetAllImagesCarouselService(context.Context) ([]model.ImageCarousel, error)
+	UpdateImagesCarouselByIDService(context.Context, model.ImageCarousel) error
 	DeleteImagesCarouselByIDService(context.Context, string) error
 }
 
@@ -53,10 +53,7 @@ func CreateImagesCarouselHandler(s ImagesCarouselServiceInterface, log *slog.Log
 // @Summary Get all images.
 // Description Get all images.
 // @Tags image carousel
-// @Accept json
 // @Produce json
-// @Param limit query string false "limit"
-// @Param offset query string false "offset"
 // @Success 200 {object} model.Response
 // @Success 204 {object} model.Response
 // @Failure 400 {object} model.Response
@@ -65,24 +62,7 @@ func CreateImagesCarouselHandler(s ImagesCarouselServiceInterface, log *slog.Log
 // @Router /image-carousel [get].
 func GetAllImagesCarouselHandler(s ImagesCarouselServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		query := model.ImageCarouselQuery{
-			Limit:  standartLimitValue,
-			Offset: standartOffsetValue,
-		}
-
-		if err := c.QueryParser(&query); err != nil {
-			log.Debug("GetAllImagesCarouselHandler error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusBadRequest, err.Error())
-		}
-
-		if err := validate.Struct(query); err != nil {
-			log.Debug("GetAllImagesCarouselHandler error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusBadRequest, err.Error())
-		}
-
-		result, err := s.GetAllImagesCarouselService(c.UserContext(), query)
+		result, err := s.GetAllImagesCarouselService(c.UserContext())
 		if err != nil {
 			return handleError(log, "GetAllImagesCarouselService error: ", err)
 		}
@@ -91,42 +71,38 @@ func GetAllImagesCarouselHandler(s ImagesCarouselServiceInterface, log *slog.Log
 	}
 }
 
-// @Summary Get image by id.
-// Description Gets image by id.
+// @Summary Update images carousel by id.
+// Description Updates images carousel by id.
 // @Tags image carousel
 // @Accept json
 // @Produce json
-// @Param id path string true "ID"
+// @Param ImagesCarousel body model.UpdateImageCarouselSwagger true "ImagesCarousel"
 // @Success 200 {object} model.Response
 // @Failure 400 {object} model.Response
-// @Failure 404 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /image-carousel/{id} [get].
-func GetImagesCarouselByIDHandler(s ImagesCarouselServiceInterface, log *slog.Logger) fiber.Handler {
+// @Router /image-carousel [put].
+func UpdateImagesCarouselByIDHandler(s ImagesCarouselServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		param := struct {
-			ID string `params:"id" validate:"required,uuid"`
-		}{}
+		imagesCarousel := model.ImageCarousel{}
 
-		if err := c.ParamsParser(&param); err != nil {
-			log.Debug("GetImagesCarouselByIDHandler error: ", err.Error())
+		if err := c.BodyParser(&imagesCarousel); err != nil {
+			log.Debug("UpdateImagesCarouselByIDHandler error: ", err.Error())
 
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 
-		if err := validate.Struct(param); err != nil {
-			log.Debug("GetImagesCarouselByIDHandler error: ", err.Error())
+		if err := validate.Struct(imagesCarousel); err != nil {
+			log.Debug("UpdateImagesCarouselByIDHandler error: ", err.Error())
 
 			return fiber.NewError(fiber.StatusBadRequest, err.Error())
 		}
 
-		result, err := s.GetImagesCarouselByIDService(c.UserContext(), param.ID)
-		if err != nil {
-			return handleError(log, "GetImagesCarouselByIDService error: ", err)
+		if err := s.UpdateImagesCarouselByIDService(c.UserContext(), imagesCarousel); err != nil {
+			return handleError(log, "UpdateImagesCarouselByIDService error: ", err)
 		}
 
-		return c.Status(fiber.StatusOK).JSON(result)
+		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))
 	}
 }
 

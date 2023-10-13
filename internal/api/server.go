@@ -91,7 +91,7 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Server) {
 
 	app.Post("/image-carousel", timeout.NewWithContext(handler.CreateImagesCarouselHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Get("/image-carousel", timeout.NewWithContext(handler.GetAllImagesCarouselHandler(s.Service, s.Log), cfg.AppWriteTimeout))
-	app.Get("/image-carousel/:id", timeout.NewWithContext(handler.GetImagesCarouselByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Put("/image-carousel", timeout.NewWithContext(handler.UpdateImagesCarouselByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Delete("/image-carousel/:id", timeout.NewWithContext(handler.DeleteImagesCarouselByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 
 	app.Post("/partner", timeout.NewWithContext(handler.CreatePartnerHandler(s.Service, s.Log), cfg.AppWriteTimeout))
@@ -104,12 +104,12 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Server) {
 	app.Get("/contact", timeout.NewWithContext(handler.GetAllContactHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Put("/contact", timeout.NewWithContext(handler.UpdateContactByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 
-	app.Post("/feedback", timeout.NewWithContext(handler.CreateFeedbackHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Post("/form", timeout.NewWithContext(handler.CreateFormHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 }
 
 func corsConfig() cors.Config {
 	return cors.Config{
-		// AllowOrigins:     `localhost:3000`, `https://<<<walking-school-backend.com>>>`,
+		// AllowOrigins: `http://walking-school.site/`,
 		AllowOrigins:     `*`,
 		AllowHeaders:     "Origin, Content-Type, Accept, Access-Control-Allow-Credentials",
 		AllowMethods:     "GET, POST, PUT, DELETE",
