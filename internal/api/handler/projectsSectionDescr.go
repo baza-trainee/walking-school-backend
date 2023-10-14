@@ -10,13 +10,13 @@ import (
 
 type ProjSectDescServiceInterface interface {
 	CreateProjSectDescService(context.Context, model.ProjSectDesc) error
-	GetProjSectDescByIDService(context.Context, string) (model.ProjSectDesc, error)
+	GetAllProjSectDescService(context.Context) ([]model.ProjSectDesc, error)
 	UpdateProjSectDescByIDService(context.Context, model.ProjSectDesc) error
 }
 
-// @Summary Create projects section description.
-// Description Create projects section description.
-// @Tags projects section description
+// @Summary Create project section description.
+// Description Create project section description.
+// @Tags project section description
 // @Accept json
 // @Produce json
 // @Param ProjSectDesc body model.CreateProjSectDescSwagger true "ProjSectDesc"
@@ -24,7 +24,7 @@ type ProjSectDescServiceInterface interface {
 // @Failure 400 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /projects-section-description [post].
+// @Router /project-section-description [post].
 func CreateProjSectDescHandler(s ProjSectDescServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		projSectDesc := model.ProjSectDesc{}
@@ -49,48 +49,31 @@ func CreateProjSectDescHandler(s ProjSectDescServiceInterface, log *slog.Logger)
 	}
 }
 
-// @Summary Get projects section description by id.
-// Description Get projects section description by id.
-// @Tags projects section description
-// @Accept json
+// @Summary Get project section description.
+// Description Get project section description.
+// @Tags project section description
 // @Produce json
-// @Param id path string true "ID"
 // @Success 200 {object} model.Response
+// @Success 204 {object} model.Response
 // @Failure 400 {object} model.Response
 // @Failure 404 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /projects-section-description/{id} [get].
-func GetProjSectDescByIDHandler(s ProjSectDescServiceInterface, log *slog.Logger) fiber.Handler {
+// @Router /project-section-description [get].
+func GetAllProjSectDescHandler(s ProjSectDescServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		param := struct {
-			ID string `params:"id" validate:"required,uuid"`
-		}{}
-
-		if err := c.ParamsParser(&param); err != nil {
-			log.Debug("GetProjSectDescByIDHandler error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusBadRequest, err.Error())
-		}
-
-		if err := validate.Struct(param); err != nil {
-			log.Debug("GetProjSectDescByIDHandler error: ", err.Error())
-
-			return fiber.NewError(fiber.StatusBadRequest, err.Error())
-		}
-
-		result, err := s.GetProjSectDescByIDService(c.UserContext(), param.ID)
+		result, err := s.GetAllProjSectDescService(c.UserContext())
 		if err != nil {
-			return handleError(log, "GetProjSectDescByIDService error: ", err)
+			return handleError(log, "GetAllProjSectDescService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(result)
 	}
 }
 
-// @Summary Update projects section description by id.
-// Description Updates projects section description by id.
-// @Tags projects section description
+// @Summary Update project section description by id.
+// Description Updates project section description by id.
+// @Tags project section description
 // @Accept json
 // @Produce json
 // @Param ProjSectDesc body model.UpdateProjSectDescSwagger true "ProjSectDesc"
@@ -99,7 +82,7 @@ func GetProjSectDescByIDHandler(s ProjSectDescServiceInterface, log *slog.Logger
 // @Failure 404 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /projects-section-description [put].
+// @Router /project-section-description [put].
 func UpdateProjSectDescByIDHandler(s ProjSectDescServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		projSectDesc := model.ProjSectDesc{}

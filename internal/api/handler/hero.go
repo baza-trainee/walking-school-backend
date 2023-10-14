@@ -16,7 +16,7 @@ type HeroServiceInterface interface {
 	DeleteHeroByIDService(context.Context, string) error
 }
 
-// @Summary Create hero .
+// @Summary Create hero.
 // Description Creates hero.
 // @Tags hero
 // @Accept json

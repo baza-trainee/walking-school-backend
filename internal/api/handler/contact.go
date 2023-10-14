@@ -49,11 +49,12 @@ func CreateContactHandler(s ContactServiceInterface, log *slog.Logger) fiber.Han
 	}
 }
 
-// @Summary Get contact.
-// Description Ge contacts.
+// @Summary Get all contacts.
+// Description Get all contacts.
 // @Tags contact
 // @Produce json
 // @Success 200 {object} model.Response
+// @Success 204 {object} model.Response
 // @Failure 400 {object} model.Response
 // @Failure 404 {object} model.Response
 // @Failure 408 {object} model.Response

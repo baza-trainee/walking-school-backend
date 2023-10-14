@@ -18,9 +18,11 @@ const (
 	partnerCollection        = "Partner"
 	contactCollection        = "Contact"
 	heroCollection           = "Hero"
-	projSectDescCollection   = "ProjectsSectionDescription"
+	projSectDescCollection   = "ProjectSectionDescription"
 	imagesCarouselCollection = "ImagesCarousel"
 	walkingSchoolDatabase    = "WalkingSchool"
+	feedbackCollection       = "Feedback"
+	connectionString         = "mongodb+srv://%s:%s@%s.h3odqng.mongodb.net/?retryWrites=true&w=majority"
 )
 
 type Storage struct {
@@ -31,7 +33,8 @@ func NewStorage(cfg config.MongoDB) (Storage, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), connectTimeout)
 	defer cancel()
 
-	opt := options.Client().SetConnectTimeout(connectTimeout).ApplyURI("mongodb://localhost:27017/")
+	opt := options.Client().SetConnectTimeout(connectTimeout).ApplyURI(
+		fmt.Sprintf(connectionString, cfg.User, cfg.Password, cfg.Host))
 
 	client, err := mongo.Connect(ctx, opt)
 	if err != nil {
@@ -42,7 +45,7 @@ func NewStorage(cfg config.MongoDB) (Storage, error) {
 		return Storage{}, fmt.Errorf("error during Ping to db: %w", err)
 	}
 
-	database := client.Database(walkingSchoolDatabase)
+	database := client.Database(cfg.DbName)
 
 	return Storage{DB: database}, nil
 }

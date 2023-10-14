@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/baza-trainee/walking-school-backend/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
@@ -18,16 +19,33 @@ func (s Storage) CreateProjSectDescStorage(ctx context.Context, projSectDesc mod
 	return nil
 }
 
-func (s Storage) GetProjSectDescByIDStorage(ctx context.Context, id string) (model.ProjSectDesc, error) {
+func (s Storage) GetAllProjSectDescStorage(ctx context.Context) ([]model.ProjSectDesc, error) {
 	collection := s.DB.Collection(projSectDescCollection)
 
-	projSectDesc := model.ProjSectDesc{}
+	result := make([]model.ProjSectDesc, 0)
 
-	if err := collection.FindOne(ctx, bson.D{{Key: "_id", Value: id}}).Decode(&projSectDesc); err != nil {
-		return model.ProjSectDesc{}, handleError("error occurred in FindOne", err)
+	cursor, err := collection.Find(ctx, bson.D{})
+	if err != nil {
+		return nil, handleError("error occurred in Find", err)
 	}
 
-	return projSectDesc, nil
+	defer cursor.Close(ctx)
+
+	for cursor.Next(ctx) {
+		record := model.ProjSectDesc{}
+
+		if err := cursor.Decode(&record); err != nil {
+			return nil, fmt.Errorf("error occurred in cursor.Decode: %w", err)
+		}
+
+		result = append(result, record)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, fmt.Errorf("error occurred in cursor.Err: %w", err)
+	}
+
+	return result, nil
 }
 
 func (s Storage) UpdateProjSectDescByIDStorage(ctx context.Context, projSectDesc model.ProjSectDesc) error {

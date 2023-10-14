@@ -54,7 +54,7 @@ func main() {
 		}
 	}()
 
-	service, err := service.NewService(storage)
+	service, err := service.NewService(storage, cfg.Form)
 	if err != nil {
 		log.Error("New Service error: ", err.Error())
 

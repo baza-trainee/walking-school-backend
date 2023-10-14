@@ -33,9 +33,15 @@ type MongoDB struct {
 	// SSLmode  string `env:"DB_SSL_MODE" envDefault:"disable"`
 }
 
+type Form struct {
+	Email         string `env:"FORM_EMAIL,notEmpty"`
+	GeneratedCode string `env:"FORM_GENERATED_CODE,notEmpty"`
+}
+
 type Config struct {
 	Server Server
 	DB     MongoDB
+	Form   Form
 	// Auth     AuthConfig
 	LogLevel string `env:"LOG_LEVEL" envDefault:"INFO"`
 }
