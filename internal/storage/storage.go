@@ -22,7 +22,7 @@ const (
 	imagesCarouselCollection = "ImagesCarousel"
 	walkingSchoolDatabase    = "WalkingSchool"
 	feedbackCollection       = "Feedback"
-	connectionString         = "mongodb+srv://%s:%s@%s.fqu5xkh.mongodb.net/"
+	connectionString         = "mongodb+srv://%s:%s@%s.h3odqng.mongodb.net/?retryWrites=true&w=majority"
 )
 
 type Storage struct {
