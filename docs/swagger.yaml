@@ -1056,6 +1056,106 @@ paths:
       summary: Update project by id.
       tags:
       - project
+  /project-section-description:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Get project section description.
+      tags:
+      - project section description
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ProjSectDesc
+        in: body
+        name: ProjSectDesc
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateProjSectDescSwagger'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Create project section description.
+      tags:
+      - project section description
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ProjSectDesc
+        in: body
+        name: ProjSectDesc
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateProjSectDescSwagger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Update project section description by id.
+      tags:
+      - project section description
   /project/{id}:
     delete:
       consumes:
@@ -1127,106 +1227,6 @@ paths:
       summary: Get project by id.
       tags:
       - project
-  /projects-section-description:
-    get:
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Response'
-        "204":
-          description: No Content
-          schema:
-            $ref: '#/definitions/model.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/model.Response'
-        "408":
-          description: Request Timeout
-          schema:
-            $ref: '#/definitions/model.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.Response'
-      summary: Get all projects section description.
-      tags:
-      - projects section description
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: ProjSectDesc
-        in: body
-        name: ProjSectDesc
-        required: true
-        schema:
-          $ref: '#/definitions/model.CreateProjSectDescSwagger'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/model.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.Response'
-        "408":
-          description: Request Timeout
-          schema:
-            $ref: '#/definitions/model.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.Response'
-      summary: Create projects section description.
-      tags:
-      - projects section description
-    put:
-      consumes:
-      - application/json
-      parameters:
-      - description: ProjSectDesc
-        in: body
-        name: ProjSectDesc
-        required: true
-        schema:
-          $ref: '#/definitions/model.UpdateProjSectDescSwagger'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/model.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/model.Response'
-        "408":
-          description: Request Timeout
-          schema:
-            $ref: '#/definitions/model.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/model.Response'
-      summary: Update projects section description by id.
-      tags:
-      - projects section description
   /user:
     get:
       consumes:

@@ -18,7 +18,7 @@ const (
 	partnerCollection        = "Partner"
 	contactCollection        = "Contact"
 	heroCollection           = "Hero"
-	projSectDescCollection   = "ProjectsSectionDescription"
+	projSectDescCollection   = "ProjectSectionDescription"
 	imagesCarouselCollection = "ImagesCarousel"
 	walkingSchoolDatabase    = "WalkingSchool"
 	feedbackCollection       = "Feedback"

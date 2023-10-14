@@ -14,9 +14,9 @@ type ProjSectDescServiceInterface interface {
 	UpdateProjSectDescByIDService(context.Context, model.ProjSectDesc) error
 }
 
-// @Summary Create projects section description.
-// Description Create projects section description.
-// @Tags projects section description
+// @Summary Create project section description.
+// Description Create project section description.
+// @Tags project section description
 // @Accept json
 // @Produce json
 // @Param ProjSectDesc body model.CreateProjSectDescSwagger true "ProjSectDesc"
@@ -24,7 +24,7 @@ type ProjSectDescServiceInterface interface {
 // @Failure 400 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /projects-section-description [post].
+// @Router /project-section-description [post].
 func CreateProjSectDescHandler(s ProjSectDescServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		projSectDesc := model.ProjSectDesc{}
@@ -49,9 +49,9 @@ func CreateProjSectDescHandler(s ProjSectDescServiceInterface, log *slog.Logger)
 	}
 }
 
-// @Summary Get all projects section description.
-// Description Get all projects section description.
-// @Tags projects section description
+// @Summary Get project section description.
+// Description Get project section description.
+// @Tags project section description
 // @Produce json
 // @Success 200 {object} model.Response
 // @Success 204 {object} model.Response
@@ -59,7 +59,7 @@ func CreateProjSectDescHandler(s ProjSectDescServiceInterface, log *slog.Logger)
 // @Failure 404 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /projects-section-description [get].
+// @Router /project-section-description [get].
 func GetAllProjSectDescHandler(s ProjSectDescServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		result, err := s.GetAllProjSectDescService(c.UserContext())
@@ -71,9 +71,9 @@ func GetAllProjSectDescHandler(s ProjSectDescServiceInterface, log *slog.Logger)
 	}
 }
 
-// @Summary Update projects section description by id.
-// Description Updates projects section description by id.
-// @Tags projects section description
+// @Summary Update project section description by id.
+// Description Updates project section description by id.
+// @Tags project section description
 // @Accept json
 // @Produce json
 // @Param ProjSectDesc body model.UpdateProjSectDescSwagger true "ProjSectDesc"
@@ -82,7 +82,7 @@ func GetAllProjSectDescHandler(s ProjSectDescServiceInterface, log *slog.Logger)
 // @Failure 404 {object} model.Response
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
-// @Router /projects-section-description [put].
+// @Router /project-section-description [put].
 func UpdateProjSectDescByIDHandler(s ProjSectDescServiceInterface, log *slog.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		projSectDesc := model.ProjSectDesc{}

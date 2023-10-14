@@ -85,9 +85,9 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Server) {
 	app.Put("/hero", timeout.NewWithContext(handler.UpdateHeroByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Delete("/hero/:id", timeout.NewWithContext(handler.DeleteHeroByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 
-	app.Post("/projects-section-description", timeout.NewWithContext(handler.CreateProjSectDescHandler(s.Service, s.Log), cfg.AppWriteTimeout))
-	app.Get("/projects-section-description", timeout.NewWithContext(handler.GetAllProjSectDescHandler(s.Service, s.Log), cfg.AppWriteTimeout))
-	app.Put("/projects-section-description", timeout.NewWithContext(handler.UpdateProjSectDescByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Post("/project-section-description", timeout.NewWithContext(handler.CreateProjSectDescHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Get("/project-section-description", timeout.NewWithContext(handler.GetAllProjSectDescHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+	app.Put("/project-section-description", timeout.NewWithContext(handler.UpdateProjSectDescByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 
 	app.Post("/image-carousel", timeout.NewWithContext(handler.CreateImagesCarouselHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 	app.Get("/image-carousel", timeout.NewWithContext(handler.GetAllImagesCarouselHandler(s.Service, s.Log), cfg.AppWriteTimeout))
