@@ -8,8 +8,8 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:7000",
-    "basePath": "/",
+    "host": "https://walking-school.site",
+    "basePath": "/api/v1",
     "paths": {
         "/contact": {
             "get": {

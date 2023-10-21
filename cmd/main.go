@@ -24,9 +24,9 @@ const timeoutLimit = 5
 // tag.description "-----tag.description-----"
 // @contact.name Yehor Tverytinov
 // @contact.email etverya12@gmail.com
-// @host localhost:7000
-// host https://walking-school-backend.com
-// @BasePath /
+// host localhost:7000
+// @host https://walking-school.site
+// @BasePath /api/v1
 
 func main() {
 	cfg, err := config.InitConfig()
