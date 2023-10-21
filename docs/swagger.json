@@ -9,7 +9,7 @@
         "version": "1.0"
     },
     "host": "localhost:7000",
-    "basePath": "/",
+    "basePath": "/api/v1",
     "paths": {
         "/contact": {
             "get": {
