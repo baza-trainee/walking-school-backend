@@ -116,7 +116,7 @@ func corsConfig() cors.Config {
 	return cors.Config{
 		// AllowOrigins: `https://walking-school.site`,
 		AllowOrigins:     `*`,
-		AllowHeaders:     "Origin, Content-Type, Accept, Access-Control-Allow-Credentials",
+		AllowHeaders:     "Origin, Content-Type, Accept, Access-Control-Allow-Credentials, Access-Control-Allow-Origin",
 		AllowMethods:     "GET, POST, PUT, DELETE",
 		AllowCredentials: true,
 	}
