@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"strings"
 
 	"log/slog"
 
@@ -115,9 +116,14 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Server) {
 func corsConfig() cors.Config {
 	return cors.Config{
 		// AllowOrigins: `https://walking-school.site`,
-		AllowOrigins:     `*`,
-		AllowHeaders:     "Origin, Content-Type, Accept, Access-Control-Allow-Credentials, Access-Control-Allow-Origin",
-		AllowMethods:     "GET, POST, PUT, DELETE",
+		AllowOrigins: `*`,
+		AllowHeaders: "Origin, Content-Type, Accept, Access-Control-Allow-Credentials, Access-Control-Allow-Origin",
+		AllowMethods: strings.Join([]string{
+			fiber.MethodGet,
+			fiber.MethodPost,
+			fiber.MethodPut,
+			fiber.MethodDelete,
+		}, ","),
 		AllowCredentials: true,
 	}
 }

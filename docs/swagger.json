@@ -8,7 +8,7 @@
         },
         "version": "1.0"
     },
-    "host": "https://walking-school.site",
+    "host": "walking-school.site",
     "basePath": "/api/v1",
     "paths": {
         "/contact": {
