@@ -25,7 +25,7 @@ type Service struct {
 	Feedback
 }
 
-func NewService(storage StorageInterface, cfg config.Form) (Service, error) {
+func NewService(storage StorageInterface, form config.Form) (Service, error) {
 	return Service{
 		Project{Storage: storage},
 		User{Storage: storage},
@@ -34,6 +34,6 @@ func NewService(storage StorageInterface, cfg config.Form) (Service, error) {
 		ProjSectDesc{Storage: storage},
 		ImagesCarousel{Storage: storage},
 		Contact{Storage: storage},
-		Feedback{Cfg: cfg},
+		Feedback{Cfg: form},
 	}, nil
 }
