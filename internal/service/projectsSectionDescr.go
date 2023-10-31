@@ -34,10 +34,6 @@ func (psd ProjSectDesc) GetAllProjSectDescService(ctx context.Context) ([]model.
 		return nil, fmt.Errorf("error occurred in GetAllProjSectDescStorage: %w", err)
 	}
 
-	if len(result) < minimalResult {
-		return []model.ProjSectDesc{}, model.ErrNoContent
-	}
-
 	return result, nil
 }
 

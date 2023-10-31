@@ -7,6 +7,7 @@ import (
 	"log/slog"
 
 	"github.com/baza-trainee/walking-school-backend/internal/api/handler"
+	"github.com/baza-trainee/walking-school-backend/internal/api/middleware"
 	"github.com/baza-trainee/walking-school-backend/internal/config"
 	"github.com/baza-trainee/walking-school-backend/internal/model"
 	"github.com/baza-trainee/walking-school-backend/internal/service"
@@ -62,6 +63,8 @@ func NewServer(cfg config.Server, service service.Service, log *slog.Logger) *Se
 
 	server.HTTPServer.Use(recover.New())
 
+	server.HTTPServer.Use(middleware.Logging(server.Log))
+
 	server.initRoutes(server.HTTPServer, cfg)
 
 	return server
@@ -72,6 +75,8 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Server) {
 
 	api := app.Group(apiPrefix)
 	{
+		api.Post("/login", timeout.NewWithContext(handler.SignInHandler(s.Service, s.Log), cfg.AppWriteTimeout))
+
 		api.Post("/project", timeout.NewWithContext(handler.CreateProjectHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 		api.Get("/project", timeout.NewWithContext(handler.GetAllProjectHandler(s.Service, s.Log), cfg.AppWriteTimeout))
 		api.Get("/project/:id", timeout.NewWithContext(handler.GetProjectByIDHandler(s.Service, s.Log), cfg.AppWriteTimeout))
@@ -117,7 +122,7 @@ func corsConfig() cors.Config {
 	return cors.Config{
 		// AllowOrigins: `https://walking-school.site`,
 		AllowOrigins: `*`,
-		AllowHeaders: "Origin, Content-Type, Accept, Access-Control-Allow-Credentials, Access-Control-Allow-Origin",
+		AllowHeaders: "Origin, Content-Type, Accept, Access-Control-Allow-Credentials",
 		AllowMethods: strings.Join([]string{
 			fiber.MethodGet,
 			fiber.MethodPost,

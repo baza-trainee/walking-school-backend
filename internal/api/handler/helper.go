@@ -14,6 +14,7 @@ var validate = validator.New() //nolint
 const (
 	standartLimitValue  = 10
 	standartOffsetValue = 0
+	minimalResult       = 1
 )
 
 func UserValidate(validate *validator.Validate, user model.User) error {
@@ -42,10 +43,6 @@ func handleError(log *slog.Logger, message string, err error) error {
 		log.Debug(message, err.Error())
 
 		return fiber.NewError(fiber.StatusNotFound, err.Error())
-	case errors.Is(err, model.ErrNoContent):
-		log.Debug(message, err.Error())
-
-		return fiber.NewError(fiber.StatusNoContent, err.Error())
 	default:
 		log.Error(message, err.Error())
 

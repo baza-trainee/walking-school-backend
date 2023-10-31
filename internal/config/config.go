@@ -39,19 +39,19 @@ type Form struct {
 }
 
 type Config struct {
-	Server Server
-	DB     MongoDB
-	Form   Form
-	// Auth     AuthConfig
+	Server   Server
+	DB       MongoDB
+	Form     Form
+	Auth     AuthConfig
 	LogLevel string `env:"LOG_LEVEL" envDefault:"INFO"`
 }
 
-// type AuthConfig struct {
-// 	Salt            string        `env:"APP_SALT,notEmpty"`
-// 	SigningKey      string        `env:"SIGNING_KEY,notEmpty"`
-// 	AccessTokenTTL  time.Duration `env:"ACCESS_TOKEN_TTL" envDefault:"15m"`
-// 	RefreshTokenTTL time.Duration `env:"REFRESH_TOKEN_TTL" envDefault:"24h"`
-// }
+type AuthConfig struct {
+	Salt            string        `env:"APP_SALT,notEmpty"`
+	SigningKey      string        `env:"SIGNING_KEY,notEmpty"`
+	AccessTokenTTL  time.Duration `env:"ACCESS_TOKEN_TTL" envDefault:"15m"`
+	RefreshTokenTTL time.Duration `env:"REFRESH_TOKEN_TTL" envDefault:"24h"`
+}
 
 func InitConfig() (Config, error) {
 	cfg := Config{}

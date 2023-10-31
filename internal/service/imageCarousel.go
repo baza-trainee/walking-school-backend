@@ -35,10 +35,6 @@ func (ic ImagesCarousel) GetAllImagesCarouselService(ctx context.Context) ([]mod
 		return nil, fmt.Errorf("error occurred in GetAllImagesCarouselStorage: %w", err)
 	}
 
-	if len(result) < minimalResult {
-		return []model.ImageCarousel{}, model.ErrNoContent
-	}
-
 	return result, nil
 }
 
