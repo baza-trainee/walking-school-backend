@@ -25,7 +25,7 @@ const timeoutLimit = 5
 // @contact.name Yehor Tverytinov
 // @contact.email etverya12@gmail.com
 // host localhost:7000
-// @host https://walking-school.site
+// @host walking-school.site
 // @BasePath /api/v1
 
 func main() {
@@ -54,7 +54,7 @@ func main() {
 		}
 	}()
 
-	service, err := service.NewService(storage, cfg.Form)
+	service, err := service.NewService(storage, cfg)
 	if err != nil {
 		log.Error("New Service error: ", err.Error())
 

@@ -12,6 +12,7 @@ type StorageInterface interface {
 	PartnerStorageInterface
 	ImagesCarouselStorageInterface
 	ContactStorageInterface
+	AuthorizationStorageInterface
 }
 
 type Service struct {
@@ -23,9 +24,10 @@ type Service struct {
 	ImagesCarousel
 	Contact
 	Feedback
+	Authorization
 }
 
-func NewService(storage StorageInterface, cfg config.Form) (Service, error) {
+func NewService(storage StorageInterface, cfg config.Config) (Service, error) {
 	return Service{
 		Project{Storage: storage},
 		User{Storage: storage},
@@ -34,6 +36,7 @@ func NewService(storage StorageInterface, cfg config.Form) (Service, error) {
 		ProjSectDesc{Storage: storage},
 		ImagesCarousel{Storage: storage},
 		Contact{Storage: storage},
-		Feedback{Cfg: cfg},
+		Feedback{Cfg: cfg.Form},
+		Authorization{Storage: storage, Cfg: cfg.Auth},
 	}, nil
 }

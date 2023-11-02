@@ -38,10 +38,6 @@ func (p Partner) GetAllPartnerService(ctx context.Context, query model.PartnerQu
 		return nil, fmt.Errorf("error occurred in GetAllPartnerStorage: %w", err)
 	}
 
-	if len(result) < minimalResult {
-		return []model.Partner{}, model.ErrNoContent
-	}
-
 	return result, nil
 }
 

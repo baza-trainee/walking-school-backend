@@ -36,10 +36,6 @@ func (h Hero) GetAllHeroService(ctx context.Context, query model.HeroQuery) ([]m
 		return nil, fmt.Errorf("error occurred in GetAllHeroStorage: %w", err)
 	}
 
-	if len(result) < minimalResult {
-		return []model.Hero{}, model.ErrNoContent
-	}
-
 	return result, nil
 }
 

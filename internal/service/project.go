@@ -40,10 +40,6 @@ func (p Project) GetAllProjectService(ctx context.Context, query model.ProjectQu
 		return nil, fmt.Errorf("error occurred in GetAllProjectStorage: %w", err)
 	}
 
-	if len(result) < minimalResult {
-		return []model.Project{}, model.ErrNoContent
-	}
-
 	return result, nil
 }
 

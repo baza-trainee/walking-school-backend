@@ -147,6 +147,17 @@ definitions:
         example: true
         type: boolean
     type: object
+  model.Identity:
+    properties:
+      login:
+        example: admin@example.com
+        type: string
+      password:
+        example: password777
+        maxLength: 255
+        minLength: 6
+        type: string
+    type: object
   model.Project:
     properties:
       age_category:
@@ -199,6 +210,13 @@ definitions:
       code:
         type: integer
       messsage:
+        type: string
+    type: object
+  model.TokenPair:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
         type: string
     type: object
   model.UpdateContactSwagger:
@@ -324,7 +342,7 @@ definitions:
         example: true
         type: boolean
     type: object
-host: https://walking-school.site
+host: walking-school.site
 info:
   contact:
     email: etverya12@gmail.com
@@ -771,6 +789,40 @@ paths:
       summary: Delete image by id.
       tags:
       - image carousel
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Accepts email and password to authorize the admin.
+      parameters:
+      - description: email and password to login
+        in: body
+        name: Identity
+        required: true
+        schema:
+          $ref: '#/definitions/model.Identity'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.TokenPair'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Authorization.
+      tags:
+      - authorization
   /partner:
     get:
       consumes:

@@ -36,10 +36,6 @@ func (u User) GetAllUserService(ctx context.Context, query model.UserQuery) ([]m
 		return nil, fmt.Errorf("error occurred in GetAllUserStorage: %w", err)
 	}
 
-	if len(result) < minimalResult {
-		return []model.User{}, model.ErrNoContent
-	}
-
 	return result, nil
 }
 

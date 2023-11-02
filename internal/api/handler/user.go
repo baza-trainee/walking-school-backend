@@ -89,6 +89,10 @@ func GetAllUserHandler(s UserServiceInterface, log *slog.Logger) fiber.Handler {
 			return handleError(log, "GetAllUserService error: ", err)
 		}
 
+		if len(result) < minimalResult {
+			return c.Status(fiber.StatusNoContent).JSON(model.SetResponse(fiber.StatusNoContent, "no content"))
+		}
+
 		return c.Status(fiber.StatusOK).JSON(result)
 	}
 }

@@ -88,6 +88,10 @@ func GetAllProjectHandler(s ProjectServiceInterface, log *slog.Logger) fiber.Han
 			return handleError(log, "GetAllProjectService error: ", err)
 		}
 
+		if len(result) < minimalResult {
+			return c.Status(fiber.StatusNoContent).JSON(model.SetResponse(fiber.StatusNoContent, "no content"))
+		}
+
 		return c.Status(fiber.StatusOK).JSON(result)
 	}
 }

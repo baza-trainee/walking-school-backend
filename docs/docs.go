@@ -690,6 +690,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/login": {
+            "post": {
+                "description": "Accepts email and password to authorize the admin.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authorization"
+                ],
+                "summary": "Authorization.",
+                "parameters": [
+                    {
+                        "description": "email and password to login",
+                        "name": "Identity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Identity"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.TokenPair"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "408": {
+                        "description": "Request Timeout",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/partner": {
             "get": {
                 "consumes": [
@@ -1876,6 +1928,21 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Identity": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string",
+                    "example": "admin@example.com"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 6,
+                    "example": "password777"
+                }
+            }
+        },
         "model.Project": {
             "type": "object",
             "required": [
@@ -1946,6 +2013,17 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "messsage": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.TokenPair": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
                     "type": "string"
                 }
             }
@@ -2130,7 +2208,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "https://walking-school.site",
+	Host:             "walking-school.site",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Walking-School backend API",

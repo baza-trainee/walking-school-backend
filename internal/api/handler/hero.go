@@ -88,6 +88,10 @@ func GetAllHeroHandler(s HeroServiceInterface, log *slog.Logger) fiber.Handler {
 			return handleError(log, "GetAllHeroService error: ", err)
 		}
 
+		if len(result) < minimalResult {
+			return c.Status(fiber.StatusNoContent).JSON(model.SetResponse(fiber.StatusNoContent, "no content"))
+		}
+
 		return c.Status(fiber.StatusOK).JSON(result)
 	}
 }
