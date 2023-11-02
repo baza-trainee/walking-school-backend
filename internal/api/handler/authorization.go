@@ -48,7 +48,7 @@ func SignInHandler(s AuthorizationServiceInterface, log *slog.Logger) fiber.Hand
 			if errors.Is(err, model.ErrNotFound) {
 				log.Debug("SignInService error: ", err.Error())
 
-				return fiber.NewError(fiber.StatusUnauthorized, err.Error())
+				return fiber.NewError(fiber.StatusUnauthorized, "unauthorized")
 			}
 
 			return handleError(log, "SignInService error: ", err)

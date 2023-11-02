@@ -12,10 +12,10 @@ func (s Storage) FindAdmin(ctx context.Context, login, password string) (model.A
 
 	admin := model.Admin{}
 
-	if err := collection.FindOne(ctx, bson.E{Key: "$and", Value: bson.A{
-		bson.E{Key: "login", Value: login},
-		bson.E{Key: "password", Value: password},
-	}}).Decode(&admin); err != nil {
+	if err := collection.FindOne(ctx, bson.D{{Key: "$and", Value: bson.A{
+		bson.D{{Key: "login", Value: login}},
+		bson.D{{Key: "password", Value: password}},
+	}}}).Decode(&admin); err != nil {
 		return model.Admin{}, handleError("error occurred in FindOne", err)
 	}
 
