@@ -342,7 +342,7 @@ definitions:
         example: true
         type: boolean
     type: object
-host: walking-school.site
+host: localhost:7000
 info:
   contact:
     email: etverya12@gmail.com
@@ -821,6 +821,31 @@ paths:
           schema:
             $ref: '#/definitions/model.Response'
       summary: Authorization.
+      tags:
+      - authorization
+  /logout:
+    post:
+      description: Cleaning of access and refresh cookies for authorized user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Logout.
       tags:
       - authorization
   /partner:

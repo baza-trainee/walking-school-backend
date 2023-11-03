@@ -19,6 +19,26 @@ type Authorization struct {
 	Cfg     config.AuthConfig
 }
 
+func ParseToken(tokenString, signingKey string) (model.Claims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &model.Claims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, model.ErrInvalidSigningMethod
+		}
+
+		return []byte(signingKey), nil
+	})
+	if err != nil {
+		return model.Claims{}, fmt.Errorf("accessToken throws an error during parsing: %w", err)
+	}
+
+	claims, ok := token.Claims.(*model.Claims)
+	if !ok {
+		return model.Claims{}, model.ErrWrongTokenClaimType
+	}
+
+	return *claims, nil
+}
+
 func (a Authorization) SignInService(ctx context.Context, person model.Identity) (model.TokenPair, error) {
 	passwordHash := SHA256(person.Password, a.Cfg.Salt)
 

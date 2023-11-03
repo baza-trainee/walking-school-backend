@@ -24,8 +24,8 @@ const timeoutLimit = 5
 // tag.description "-----tag.description-----"
 // @contact.name Yehor Tverytinov
 // @contact.email etverya12@gmail.com
-// host localhost:7000
-// @host walking-school.site
+// @host localhost:7000
+// host walking-school.site
 // @BasePath /api/v1
 
 func main() {
@@ -61,7 +61,7 @@ func main() {
 		return
 	}
 
-	server := api.NewServer(cfg.Server, service, log)
+	server := api.NewServer(cfg, service, log)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
