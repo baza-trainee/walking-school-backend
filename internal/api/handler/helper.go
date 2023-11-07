@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"log/slog"
+	"time"
 
 	"github.com/baza-trainee/walking-school-backend/internal/model"
 	"github.com/go-playground/validator"
@@ -15,6 +16,7 @@ const (
 	standartLimitValue  = 10
 	standartOffsetValue = 0
 	minimalResult       = 1
+	AdminID             = "AdminID"
 )
 
 func UserValidate(validate *validator.Validate, user model.User) error {
@@ -47,5 +49,17 @@ func handleError(log *slog.Logger, message string, err error) error {
 		log.Error(message, err.Error())
 
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+}
+
+func newCookie(name, value, path string, expire time.Time) *fiber.Cookie {
+	return &fiber.Cookie{
+		Name:     name,
+		Value:    value,
+		Path:     path,
+		Expires:  expire,
+		Secure:   false,
+		HTTPOnly: true,
+		SameSite: "none",
 	}
 }

@@ -12,6 +12,7 @@ import (
 
 type AuthorizationStorageInterface interface {
 	FindAdmin(context.Context, string, string) (model.Admin, error)
+	FindAdminByID(context.Context, string) error
 }
 
 type Authorization struct {
@@ -33,6 +34,44 @@ func (a Authorization) SignInService(ctx context.Context, person model.Identity)
 	}
 
 	return tokenPair, nil
+}
+
+func (a Authorization) RefreshService(ctx context.Context, token string) (model.TokenPair, error) {
+	claim, err := ParseToken(token, a.Cfg.SigningKey)
+	if err != nil {
+		return model.TokenPair{}, fmt.Errorf("error occurred in ParseToken: %w", err)
+	}
+
+	if err := a.Storage.FindAdminByID(ctx, claim.ID); err != nil {
+		return model.TokenPair{}, fmt.Errorf("error occurred in FindAdminByID: %w", err)
+	}
+
+	tokenPair, err := a.generateTokenPair(ctx, claim.ID)
+	if err != nil {
+		return model.TokenPair{}, fmt.Errorf("generateTokenPair error: %w", err)
+	}
+
+	return tokenPair, nil
+}
+
+func ParseToken(tokenString, signingKey string) (model.Claims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &model.Claims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, model.ErrInvalidSigningMethod
+		}
+
+		return []byte(signingKey), nil
+	})
+	if err != nil {
+		return model.Claims{}, fmt.Errorf("accessToken throws an error during parsing: %w", err)
+	}
+
+	claims, ok := token.Claims.(*model.Claims)
+	if !ok {
+		return model.Claims{}, model.ErrWrongTokenClaimType
+	}
+
+	return *claims, nil
 }
 
 func (a Authorization) generateTokenPair(ctx context.Context, id string) (model.TokenPair, error) {
