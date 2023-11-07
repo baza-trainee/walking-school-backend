@@ -20,12 +20,10 @@ const timeoutLimit = 5
 
 // @title Walking-School backend API
 // @version 1.0
-// tag.name "-----tag.name-----"
-// tag.description "-----tag.description-----"
 // @contact.name Yehor Tverytinov
 // @contact.email etverya12@gmail.com
-// @host localhost:7000
-// host walking-school.site
+// host localhost:7000
+// @host walking-school.site
 // @BasePath /api/v1
 
 func main() {

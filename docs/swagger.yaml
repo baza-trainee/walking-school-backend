@@ -215,8 +215,10 @@ definitions:
   model.TokenPair:
     properties:
       access_token:
+        example: ""
         type: string
       refresh_token:
+        example: ""
         type: string
     type: object
   model.UpdateContactSwagger:
@@ -342,7 +344,7 @@ definitions:
         example: true
         type: boolean
     type: object
-host: localhost:7000
+host: walking-school.site
 info:
   contact:
     email: etverya12@gmail.com
@@ -350,6 +352,40 @@ info:
   title: Walking-School backend API
   version: "1.0"
 paths:
+  /authorization-refresh:
+    post:
+      consumes:
+      - application/json
+      description: Renew accept and refresh tokens.
+      parameters:
+      - description: couple of access and refresh tokens
+        in: body
+        name: TokenPair
+        required: true
+        schema:
+          $ref: '#/definitions/model.TokenPair'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.TokenPair'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Refreshing tokens.
+      tags:
+      - authorization
   /contact:
     get:
       produces:

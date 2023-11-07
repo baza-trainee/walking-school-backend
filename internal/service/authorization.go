@@ -12,11 +12,46 @@ import (
 
 type AuthorizationStorageInterface interface {
 	FindAdmin(context.Context, string, string) (model.Admin, error)
+	FindAdminByID(context.Context, string) error
 }
 
 type Authorization struct {
 	Storage AuthorizationStorageInterface
 	Cfg     config.AuthConfig
+}
+
+func (a Authorization) SignInService(ctx context.Context, person model.Identity) (model.TokenPair, error) {
+	passwordHash := SHA256(person.Password, a.Cfg.Salt)
+
+	admin, err := a.Storage.FindAdmin(ctx, person.Login, passwordHash)
+	if err != nil {
+		return model.TokenPair{}, fmt.Errorf("error occurred in FindAdmin: %w", err)
+	}
+
+	tokenPair, err := a.generateTokenPair(ctx, admin.ID)
+	if err != nil {
+		return model.TokenPair{}, fmt.Errorf("generateTokenPair error: %w", err)
+	}
+
+	return tokenPair, nil
+}
+
+func (a Authorization) RefreshService(ctx context.Context, token string) (model.TokenPair, error) {
+	claim, err := ParseToken(token, a.Cfg.SigningKey)
+	if err != nil {
+		return model.TokenPair{}, fmt.Errorf("error occurred in ParseToken: %w", err)
+	}
+
+	if err := a.Storage.FindAdminByID(ctx, claim.ID); err != nil {
+		return model.TokenPair{}, fmt.Errorf("error occurred in FindAdminByID: %w", err)
+	}
+
+	tokenPair, err := a.generateTokenPair(ctx, claim.ID)
+	if err != nil {
+		return model.TokenPair{}, fmt.Errorf("generateTokenPair error: %w", err)
+	}
+
+	return tokenPair, nil
 }
 
 func ParseToken(tokenString, signingKey string) (model.Claims, error) {
@@ -37,22 +72,6 @@ func ParseToken(tokenString, signingKey string) (model.Claims, error) {
 	}
 
 	return *claims, nil
-}
-
-func (a Authorization) SignInService(ctx context.Context, person model.Identity) (model.TokenPair, error) {
-	passwordHash := SHA256(person.Password, a.Cfg.Salt)
-
-	admin, err := a.Storage.FindAdmin(ctx, person.Login, passwordHash)
-	if err != nil {
-		return model.TokenPair{}, fmt.Errorf("error occurred in FindAdmin: %w", err)
-	}
-
-	tokenPair, err := a.generateTokenPair(ctx, admin.ID)
-	if err != nil {
-		return model.TokenPair{}, fmt.Errorf("generateTokenPair error: %w", err)
-	}
-
-	return tokenPair, nil
 }
 
 func (a Authorization) generateTokenPair(ctx context.Context, id string) (model.TokenPair, error) {

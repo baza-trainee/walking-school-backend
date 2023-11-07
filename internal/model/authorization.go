@@ -15,8 +15,8 @@ type Identity struct {
 }
 
 type TokenPair struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
+	AccessToken  string `json:"access_token" example:""`
+	RefreshToken string `json:"refresh_token" example:""`
 }
 
 type Admin struct {

@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"strings"
 	"time"
@@ -14,6 +15,7 @@ import (
 
 type AuthorizationServiceInterface interface {
 	SignInService(context.Context, model.Identity) (model.TokenPair, error)
+	RefreshService(context.Context, string) (model.TokenPair, error)
 }
 
 // @Summary Authorization.
@@ -118,3 +120,41 @@ func SignOutHandler() fiber.Handler {
 // @Failure 408 {object} model.Response
 // @Failure 500 {object} model.Response
 // @Router /authorization-refresh [post].
+func RefreshHandler(s AuthorizationServiceInterface, log *slog.Logger, cfg config.AuthConfig) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		refreshToken := c.Cookies(model.RefreshCookieName)
+		if refreshToken == "" {
+			log.Debug(fmt.Sprintf("%s is empty", model.RefreshCookieName))
+
+			return c.SendStatus(fiber.StatusUnauthorized)
+			// return fiber.NewError(fiber.StatusUnauthorized, fmt.Sprintf("%s is empty", model.RefreshCookieName))
+		}
+
+		result, err := s.RefreshService(c.UserContext(), refreshToken)
+		if err != nil {
+			if errors.Is(err, model.ErrNotFound) {
+				log.Debug("RefreshService error: ", err.Error())
+
+				return fiber.NewError(fiber.StatusUnauthorized, "unauthorized")
+			}
+
+			return handleError(log, "RefreshService error: ", err)
+		}
+
+		c.Cookie(newCookie(
+			model.AccessCookieName,
+			result.AccessToken,
+			model.AccessCookiePath,
+			time.Now().Add(cfg.AccessTokenTTL),
+		))
+
+		c.Cookie(newCookie(
+			model.RefreshCookieName,
+			result.RefreshToken,
+			model.RefreshCookiePath,
+			time.Now().Add(cfg.RefreshTokenTTL),
+		))
+
+		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))
+	}
+}
