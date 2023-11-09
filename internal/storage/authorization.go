@@ -43,3 +43,13 @@ func (s Storage) FindAdminByLogin(ctx context.Context, login string) (model.Admi
 
 	return admin, nil
 }
+
+func (s Storage) ResetPasswordByID(ctx context.Context, id, newPassword string) error {
+	collection := s.DB.Collection(adminCollection)
+
+	filter := bson.D{{Key: "_id", Value: id}}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "password", Value: newPassword}}}}
+
+	result, err := collection.UpdateOne(ctx, filter, update)
+	return handleUpdateByIDError(result, "error occurred in UpdateOne()", err)
+}

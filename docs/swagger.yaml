@@ -155,7 +155,7 @@ definitions:
       password:
         example: password777
         maxLength: 255
-        minLength: 6
+        minLength: 10
         type: string
     type: object
   model.Login:
@@ -210,6 +210,24 @@ definitions:
     - link
     - period
     - title
+    type: object
+  model.ResetPassword:
+    properties:
+      confirmed_new_password:
+        example: password888
+        maxLength: 255
+        minLength: 10
+        type: string
+      new_password:
+        example: password888
+        maxLength: 255
+        minLength: 10
+        type: string
+      token:
+        example: ""
+        type: string
+    required:
+    - token
     type: object
   model.Response:
     properties:
@@ -1376,6 +1394,36 @@ paths:
       summary: Get project by id.
       tags:
       - project
+  /reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Reset password.
+      parameters:
+      - description: Reset password to access to account
+        in: body
+        name: ResetPassword
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResetPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Reset password.
+      tags:
+      - authorization
   /user:
     get:
       consumes:

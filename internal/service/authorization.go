@@ -14,6 +14,7 @@ type AuthorizationStorageInterface interface {
 	FindAdmin(context.Context, string, string) (model.Admin, error)
 	FindAdminByID(context.Context, string) error
 	FindAdminByLogin(context.Context, string) (model.Admin, error)
+	ResetPasswordByID(context.Context, string, string) error
 }
 
 type Authorization struct {
@@ -81,6 +82,21 @@ func (a Authorization) ForgotPasswordService(ctx context.Context, login string) 
 		fmt.Sprintf(resetPasswordMessage, link),
 	); err != nil {
 		return fmt.Errorf("error occurred in sendMessage(): %w", err)
+	}
+
+	return nil
+}
+
+func (a Authorization) ResetPasswordService(ctx context.Context, data model.ResetPassword) error {
+	claims, err := ParseToken(data.Token, a.CfgAuth.SigningKey)
+	if err != nil {
+		return fmt.Errorf("error occurred in ParseToken: %w", err)
+	}
+
+	passwordHash := SHA256(data.NewPassword, a.CfgAuth.Salt)
+
+	if err := a.Storage.ResetPasswordByID(ctx, claims.ID, passwordHash); err != nil {
+		return fmt.Errorf("error occurred in ResetPasswordByID: %w", err)
 	}
 
 	return nil

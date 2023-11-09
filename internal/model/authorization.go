@@ -11,7 +11,7 @@ const (
 
 type Identity struct {
 	Login    string `json:"login" bson:"login" validate:"email" example:"admin@example.com"`
-	Password string `json:"password" bson:"password" validate:"min=6,max=255" example:"password777"`
+	Password string `json:"password" bson:"password" validate:"min=10,max=255" example:"password777"`
 }
 
 type TokenPair struct {
@@ -31,4 +31,10 @@ type Claims struct {
 
 type Login struct {
 	Login string `json:"login" bson:"login" validate:"email" example:""`
+}
+
+type ResetPassword struct {
+	Token                string `json:"token" validate:"required" example:""`
+	NewPassword          string `json:"new_password" validate:"min=10,max=255" example:"password888"`
+	ConfirmedNewPassword string `json:"confirmed_new_password" validate:"min=10,max=255" example:"password888"`
 }

@@ -17,6 +17,7 @@ type AuthorizationServiceInterface interface {
 	SignInService(context.Context, model.Identity) (model.TokenPair, error)
 	RefreshService(context.Context, string) (model.TokenPair, error)
 	ForgotPasswordService(context.Context, string) error
+	ResetPasswordService(context.Context, model.ResetPassword) error
 }
 
 // @Summary Authorization.
@@ -188,6 +189,46 @@ func ForgotPasswordHandler(s AuthorizationServiceInterface, log *slog.Logger) fi
 
 		if err := s.ForgotPasswordService(c.UserContext(), login.Login); err != nil {
 			return handleError(log, "ForgotPasswordService error: ", err)
+		}
+
+		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))
+	}
+}
+
+// @Summary Reset password.
+// @Description Reset password.
+// @Tags authorization
+// @Accept json
+// @Produce json
+// @Param ResetPassword body model.ResetPassword true "Reset password to access to account"
+// @Success 200 {object} model.Response
+// @Failure 408 {object} model.Response
+// @Failure 500 {object} model.Response
+// @Router /reset-password [post].
+func ResetPasswordHandler(s AuthorizationServiceInterface, log *slog.Logger) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		data := model.ResetPassword{}
+
+		if err := c.BodyParser(&data); err != nil {
+			log.Debug("ResetPasswordHandler error: ", err.Error())
+
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+
+		if err := validate.Struct(data); err != nil {
+			log.Debug("ResetPasswordHandler error: ", err.Error())
+
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+
+		if data.NewPassword != data.ConfirmedNewPassword {
+			log.Debug("ResetPasswordHandler error: ", "new password and confirmed one don't match")
+
+			return fiber.NewError(fiber.StatusBadRequest, "new password and confirmed one don't match")
+		}
+
+		if err := s.ResetPasswordService(c.UserContext(), data); err != nil {
+			return handleError(log, "ResetPasswordService error: ", err)
 		}
 
 		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))

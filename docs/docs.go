@@ -1575,6 +1575,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/reset-password": {
+            "post": {
+                "description": "Reset password.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authorization"
+                ],
+                "summary": "Reset password.",
+                "parameters": [
+                    {
+                        "description": "Reset password to access to account",
+                        "name": "ResetPassword",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ResetPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "408": {
+                        "description": "Request Timeout",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "consumes": [
@@ -2074,7 +2120,7 @@ const docTemplate = `{
                 "password": {
                     "type": "string",
                     "maxLength": 255,
-                    "minLength": 6,
+                    "minLength": 10,
                     "example": "password777"
                 }
             }
@@ -2146,6 +2192,30 @@ const docTemplate = `{
                     ]
                 },
                 "title": {
+                    "type": "string",
+                    "example": ""
+                }
+            }
+        },
+        "model.ResetPassword": {
+            "type": "object",
+            "required": [
+                "token"
+            ],
+            "properties": {
+                "confirmed_new_password": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 10,
+                    "example": "password888"
+                },
+                "new_password": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 10,
+                    "example": "password888"
+                },
+                "token": {
                     "type": "string",
                     "example": ""
                 }

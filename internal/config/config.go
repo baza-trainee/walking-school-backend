@@ -30,7 +30,6 @@ type MongoDB struct {
 	DbName   string `env:"DB_NAME,notEmpty"`
 	User     string `env:"DB_USER,notEmpty"`
 	Password string `env:"DB_PASSWORD,notEmpty"`
-	// SSLmode  string `env:"DB_SSL_MODE" envDefault:"disable"`
 }
 
 type Feedback struct {
