@@ -223,7 +223,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/form": {
+        "/feedback": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -232,17 +232,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "form"
+                    "feedback"
                 ],
-                "summary": "Create form.",
+                "summary": "Create feedback.",
                 "parameters": [
                     {
-                        "description": "Form",
-                        "name": "Form",
+                        "description": "feedback",
+                        "name": "feedback",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.CreateFormSwagger"
+                            "$ref": "#/definitions/model.CreateFeedbackSwagger"
                         }
                     }
                 ],
@@ -255,6 +255,52 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "408": {
+                        "description": "Request Timeout",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/forgot-password": {
+            "post": {
+                "description": "Reset password.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authorization"
+                ],
+                "summary": "Forgot password.",
+                "parameters": [
+                    {
+                        "description": "Email to authenticate user",
+                        "name": "Email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Response"
                         }
@@ -1529,6 +1575,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/reset-password": {
+            "post": {
+                "description": "Reset password.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authorization"
+                ],
+                "summary": "Reset password.",
+                "parameters": [
+                    {
+                        "description": "Reset password to access to account",
+                        "name": "ResetPassword",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ResetPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "408": {
+                        "description": "Request Timeout",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "get": {
                 "consumes": [
@@ -1838,7 +1930,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.CreateFormSwagger": {
+        "model.CreateFeedbackSwagger": {
             "type": "object",
             "properties": {
                 "email": {
@@ -2028,8 +2120,17 @@ const docTemplate = `{
                 "password": {
                     "type": "string",
                     "maxLength": 255,
-                    "minLength": 6,
+                    "minLength": 10,
                     "example": "password777"
+                }
+            }
+        },
+        "model.Login": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string",
+                    "example": ""
                 }
             }
         },
@@ -2091,6 +2192,30 @@ const docTemplate = `{
                     ]
                 },
                 "title": {
+                    "type": "string",
+                    "example": ""
+                }
+            }
+        },
+        "model.ResetPassword": {
+            "type": "object",
+            "required": [
+                "token"
+            ],
+            "properties": {
+                "confirmed_new_password": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 10,
+                    "example": "password888"
+                },
+                "new_password": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 10,
+                    "example": "password888"
+                },
+                "token": {
                     "type": "string",
                     "example": ""
                 }
@@ -2300,7 +2425,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "walking-school.site",
+	Host:             "localhost:7000",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Walking-School backend API",

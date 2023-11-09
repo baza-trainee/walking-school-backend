@@ -31,3 +31,25 @@ func (s Storage) FindAdminByID(ctx context.Context, id string) error {
 
 	return nil
 }
+
+func (s Storage) FindAdminByLogin(ctx context.Context, login string) (model.Admin, error) {
+	collection := s.DB.Collection(adminCollection)
+
+	admin := model.Admin{}
+
+	if err := collection.FindOne(ctx, bson.D{{Key: "login", Value: login}}).Decode(&admin); err != nil {
+		return model.Admin{}, handleError("error occurred in FindOne", err)
+	}
+
+	return admin, nil
+}
+
+func (s Storage) ResetPasswordByID(ctx context.Context, id, newPassword string) error {
+	collection := s.DB.Collection(adminCollection)
+
+	filter := bson.D{{Key: "_id", Value: id}}
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "password", Value: newPassword}}}}
+
+	result, err := collection.UpdateOne(ctx, filter, update)
+	return handleUpdateByIDError(result, "error occurred in UpdateOne()", err)
+}

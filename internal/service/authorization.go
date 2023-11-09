@@ -13,15 +13,18 @@ import (
 type AuthorizationStorageInterface interface {
 	FindAdmin(context.Context, string, string) (model.Admin, error)
 	FindAdminByID(context.Context, string) error
+	FindAdminByLogin(context.Context, string) (model.Admin, error)
+	ResetPasswordByID(context.Context, string, string) error
 }
 
 type Authorization struct {
 	Storage AuthorizationStorageInterface
-	Cfg     config.AuthConfig
+	CfgAuth config.AuthConfig
+	CfgMsg  config.Feedback
 }
 
 func (a Authorization) SignInService(ctx context.Context, person model.Identity) (model.TokenPair, error) {
-	passwordHash := SHA256(person.Password, a.Cfg.Salt)
+	passwordHash := SHA256(person.Password, a.CfgAuth.Salt)
 
 	admin, err := a.Storage.FindAdmin(ctx, person.Login, passwordHash)
 	if err != nil {
@@ -37,7 +40,7 @@ func (a Authorization) SignInService(ctx context.Context, person model.Identity)
 }
 
 func (a Authorization) RefreshService(ctx context.Context, token string) (model.TokenPair, error) {
-	claim, err := ParseToken(token, a.Cfg.SigningKey)
+	claim, err := ParseToken(token, a.CfgAuth.SigningKey)
 	if err != nil {
 		return model.TokenPair{}, fmt.Errorf("error occurred in ParseToken: %w", err)
 	}
@@ -52,6 +55,51 @@ func (a Authorization) RefreshService(ctx context.Context, token string) (model.
 	}
 
 	return tokenPair, nil
+}
+
+func (a Authorization) ForgotPasswordService(ctx context.Context, login string) error {
+	admin, err := a.Storage.FindAdminByLogin(ctx, login)
+	if err != nil {
+		return fmt.Errorf("error occurred in FindAdminByLogin: %w", err)
+	}
+
+	accessExpire := time.Now().Add(a.CfgAuth.AccessTokenTTL)
+
+	token, err := generateJWT(accessExpire, a.CfgAuth.SigningKey, admin.ID)
+	if err != nil {
+		return fmt.Errorf("error occurred in generateJWT: %w", err)
+	}
+
+	link := fmt.Sprintf(linkToResetPassword, token)
+
+	if err := sendMessage(
+		a.CfgMsg.Host,
+		a.CfgMsg.Port,
+		a.CfgMsg.Username,
+		a.CfgMsg.Password,
+		a.CfgMsg.From,
+		login,
+		fmt.Sprintf(resetPasswordMessage, link),
+	); err != nil {
+		return fmt.Errorf("error occurred in sendMessage(): %w", err)
+	}
+
+	return nil
+}
+
+func (a Authorization) ResetPasswordService(ctx context.Context, data model.ResetPassword) error {
+	claims, err := ParseToken(data.Token, a.CfgAuth.SigningKey)
+	if err != nil {
+		return fmt.Errorf("error occurred in ParseToken: %w", err)
+	}
+
+	passwordHash := SHA256(data.NewPassword, a.CfgAuth.Salt)
+
+	if err := a.Storage.ResetPasswordByID(ctx, claims.ID, passwordHash); err != nil {
+		return fmt.Errorf("error occurred in ResetPasswordByID: %w", err)
+	}
+
+	return nil
 }
 
 func ParseToken(tokenString, signingKey string) (model.Claims, error) {
@@ -75,15 +123,15 @@ func ParseToken(tokenString, signingKey string) (model.Claims, error) {
 }
 
 func (a Authorization) generateTokenPair(ctx context.Context, id string) (model.TokenPair, error) {
-	accessExpire := time.Now().Add(a.Cfg.AccessTokenTTL)
-	refreshExpire := time.Now().Add(a.Cfg.RefreshTokenTTL)
+	accessExpire := time.Now().Add(a.CfgAuth.AccessTokenTTL)
+	refreshExpire := time.Now().Add(a.CfgAuth.RefreshTokenTTL)
 
-	accessToken, err := generateJWT(accessExpire, a.Cfg.SigningKey, id)
+	accessToken, err := generateJWT(accessExpire, a.CfgAuth.SigningKey, id)
 	if err != nil {
 		return model.TokenPair{}, fmt.Errorf("generateJWT error: %w", err)
 	}
 
-	refreshToken, err := generateJWT(refreshExpire, a.Cfg.SigningKey, id)
+	refreshToken, err := generateJWT(refreshExpire, a.CfgAuth.SigningKey, id)
 	if err != nil {
 		return model.TokenPair{}, fmt.Errorf("generateJWT error: %w", err)
 	}
