@@ -158,6 +158,12 @@ definitions:
         minLength: 6
         type: string
     type: object
+  model.Login:
+    properties:
+      login:
+        example: ""
+        type: string
+    type: object
   model.Project:
     properties:
       age_category:
@@ -519,6 +525,36 @@ paths:
       summary: Create feedback.
       tags:
       - feedback
+  /forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Reset password.
+      parameters:
+      - description: Email to authenticate user
+        in: body
+        name: Email
+        required: true
+        schema:
+          $ref: '#/definitions/model.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Forgot password.
+      tags:
+      - authorization
   /hero:
     get:
       consumes:

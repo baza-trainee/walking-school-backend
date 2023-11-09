@@ -28,3 +28,7 @@ type Claims struct {
 	jwt.StandardClaims
 	ID string
 }
+
+type Login struct {
+	Login string `json:"login" bson:"login" validate:"email" example:""`
+}

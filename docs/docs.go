@@ -274,6 +274,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/forgot-password": {
+            "post": {
+                "description": "Reset password.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authorization"
+                ],
+                "summary": "Forgot password.",
+                "parameters": [
+                    {
+                        "description": "Email to authenticate user",
+                        "name": "Email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "408": {
+                        "description": "Request Timeout",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/hero": {
             "get": {
                 "consumes": [
@@ -2030,6 +2076,15 @@ const docTemplate = `{
                     "maxLength": 255,
                     "minLength": 6,
                     "example": "password777"
+                }
+            }
+        },
+        "model.Login": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string",
+                    "example": ""
                 }
             }
         },

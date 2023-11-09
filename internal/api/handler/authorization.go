@@ -16,6 +16,7 @@ import (
 type AuthorizationServiceInterface interface {
 	SignInService(context.Context, model.Identity) (model.TokenPair, error)
 	RefreshService(context.Context, string) (model.TokenPair, error)
+	ForgotPasswordService(context.Context, string) error
 }
 
 // @Summary Authorization.
@@ -154,6 +155,40 @@ func RefreshHandler(s AuthorizationServiceInterface, log *slog.Logger, cfg confi
 			model.RefreshCookiePath,
 			time.Now().Add(cfg.RefreshTokenTTL),
 		))
+
+		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))
+	}
+}
+
+// @Summary Forgot password.
+// @Description Reset password.
+// @Tags authorization
+// @Accept json
+// @Produce json
+// @Param Email body model.Login true "Email to authenticate user"
+// @Success 200 {object} model.Response
+// @Failure 408 {object} model.Response
+// @Failure 500 {object} model.Response
+// @Router /forgot-password [post].
+func ForgotPasswordHandler(s AuthorizationServiceInterface, log *slog.Logger) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		login := model.Login{}
+
+		if err := c.BodyParser(&login); err != nil {
+			log.Debug("ForgotPasswordHandler error: ", err.Error())
+
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+
+		if err := validate.Struct(login); err != nil {
+			log.Debug("ForgotPasswordHandler error: ", err.Error())
+
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+
+		if err := s.ForgotPasswordService(c.UserContext(), login.Login); err != nil {
+			return handleError(log, "ForgotPasswordService error: ", err)
+		}
 
 		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))
 	}

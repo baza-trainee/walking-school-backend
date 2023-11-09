@@ -37,6 +37,6 @@ func NewService(storage StorageInterface, cfg config.Config) (Service, error) {
 		ImagesCarousel{Storage: storage},
 		Contact{Storage: storage},
 		Feedback{Cfg: cfg.Feedback},
-		Authorization{Storage: storage, Cfg: cfg.Auth},
+		Authorization{Storage: storage, CfgAuth: cfg.Auth, CfgMsg: cfg.Feedback},
 	}, nil
 }

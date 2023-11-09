@@ -31,3 +31,15 @@ func (s Storage) FindAdminByID(ctx context.Context, id string) error {
 
 	return nil
 }
+
+func (s Storage) FindAdminByLogin(ctx context.Context, login string) (model.Admin, error) {
+	collection := s.DB.Collection(adminCollection)
+
+	admin := model.Admin{}
+
+	if err := collection.FindOne(ctx, bson.D{{Key: "login", Value: login}}).Decode(&admin); err != nil {
+		return model.Admin{}, handleError("error occurred in FindOne", err)
+	}
+
+	return admin, nil
+}
