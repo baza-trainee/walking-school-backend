@@ -33,15 +33,18 @@ type MongoDB struct {
 	// SSLmode  string `env:"DB_SSL_MODE" envDefault:"disable"`
 }
 
-type Form struct {
-	Email         string `env:"FORM_EMAIL,notEmpty"`
-	GeneratedCode string `env:"FORM_GENERATED_CODE,notEmpty"`
+type Feedback struct {
+	Host     string `env:"FEEDBACK_HOST,notEmpty"`
+	Port     string `env:"FEEDBACK_PORT,notEmpty"`
+	Username string `env:"FEEDBACK_USERNAME,notEmpty"`
+	Password string `env:"FEEDBACK_PASSWORD,notEmpty"`
+	From     string `env:"FEEDBACK_FROM,notEmpty"`
 }
 
 type Config struct {
 	Server   Server
 	DB       MongoDB
-	Form     Form
+	Feedback Feedback
 	Auth     AuthConfig
 	LogLevel string `env:"LOG_LEVEL" envDefault:"INFO"`
 }

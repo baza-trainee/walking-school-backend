@@ -21,7 +21,7 @@ definitions:
         example: ""
         type: string
     type: object
-  model.CreateFormSwagger:
+  model.CreateFeedbackSwagger:
     properties:
       email:
         example: ""
@@ -344,7 +344,7 @@ definitions:
         example: true
         type: boolean
     type: object
-host: walking-school.site
+host: localhost:7000
 info:
   contact:
     email: etverya12@gmail.com
@@ -486,17 +486,17 @@ paths:
       summary: Update contact by id.
       tags:
       - contact
-  /form:
+  /feedback:
     post:
       consumes:
       - application/json
       parameters:
-      - description: Form
+      - description: feedback
         in: body
-        name: Form
+        name: feedback
         required: true
         schema:
-          $ref: '#/definitions/model.CreateFormSwagger'
+          $ref: '#/definitions/model.CreateFeedbackSwagger'
       produces:
       - application/json
       responses:
@@ -516,9 +516,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.Response'
-      summary: Create form.
+      summary: Create feedback.
       tags:
-      - form
+      - feedback
   /hero:
     get:
       consumes:

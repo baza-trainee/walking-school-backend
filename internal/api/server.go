@@ -118,7 +118,7 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Config) {
 		api.Get("/contact", timeout.NewWithContext(handler.GetAllContactHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 		api.Put("/contact", timeout.NewWithContext(handler.UpdateContactByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 
-		api.Post("/form", timeout.NewWithContext(handler.CreateFormHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Post("/feedback", timeout.NewWithContext(handler.CreateFeedbackHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 	}
 }
 

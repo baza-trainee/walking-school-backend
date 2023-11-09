@@ -8,7 +8,7 @@
         },
         "version": "1.0"
     },
-    "host": "walking-school.site",
+    "host": "localhost:7000",
     "basePath": "/api/v1",
     "paths": {
         "/authorization-refresh": {
@@ -216,7 +216,7 @@
                 }
             }
         },
-        "/form": {
+        "/feedback": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -225,17 +225,17 @@
                     "application/json"
                 ],
                 "tags": [
-                    "form"
+                    "feedback"
                 ],
-                "summary": "Create form.",
+                "summary": "Create feedback.",
                 "parameters": [
                     {
-                        "description": "Form",
-                        "name": "Form",
+                        "description": "feedback",
+                        "name": "feedback",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.CreateFormSwagger"
+                            "$ref": "#/definitions/model.CreateFeedbackSwagger"
                         }
                     }
                 ],
@@ -1831,7 +1831,7 @@
                 }
             }
         },
-        "model.CreateFormSwagger": {
+        "model.CreateFeedbackSwagger": {
             "type": "object",
             "properties": {
                 "email": {

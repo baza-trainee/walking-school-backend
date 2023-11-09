@@ -223,7 +223,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/form": {
+        "/feedback": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -232,17 +232,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "form"
+                    "feedback"
                 ],
-                "summary": "Create form.",
+                "summary": "Create feedback.",
                 "parameters": [
                     {
-                        "description": "Form",
-                        "name": "Form",
+                        "description": "feedback",
+                        "name": "feedback",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.CreateFormSwagger"
+                            "$ref": "#/definitions/model.CreateFeedbackSwagger"
                         }
                     }
                 ],
@@ -1838,7 +1838,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.CreateFormSwagger": {
+        "model.CreateFeedbackSwagger": {
             "type": "object",
             "properties": {
                 "email": {
@@ -2300,7 +2300,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "walking-school.site",
+	Host:             "localhost:7000",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Walking-School backend API",
