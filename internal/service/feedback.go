@@ -16,7 +16,7 @@ func (f Feedback) CreateFeedbackService(ctx context.Context, fb model.Feedback) 
 
 	message := fmt.Sprintf(patternForFeedback, fb.Name, fb.Surname, fb.Phone, fb.Email, fb.Text)
 
-	if err := sendMessage(f.Cfg.Host, f.Cfg.Port, f.Cfg.Username, f.Cfg.Password, f.Cfg.From, fb.Email, message); err != nil {
+	if err := sendMessage(f.Cfg.Host, f.Cfg.Port, f.Cfg.Username, f.Cfg.Password, fb.Email, f.Cfg.From, message); err != nil {
 		return fmt.Errorf("error occurred in sendMessage: %w", err)
 	}
 
