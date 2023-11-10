@@ -381,13 +381,6 @@ paths:
       consumes:
       - application/json
       description: Renew accept and refresh tokens.
-      parameters:
-      - description: couple of access and refresh tokens
-        in: body
-        name: TokenPair
-        required: true
-        schema:
-          $ref: '#/definitions/model.TokenPair'
       produces:
       - application/json
       responses:
@@ -1394,6 +1387,36 @@ paths:
       summary: Get project by id.
       tags:
       - project
+  /registration-for-test:
+    post:
+      consumes:
+      - application/json
+      description: Registration for test.
+      parameters:
+      - description: Registration for test
+        in: body
+        name: RegistrationForTest
+        required: true
+        schema:
+          $ref: '#/definitions/model.Identity'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Response'
+        "408":
+          description: Request Timeout
+          schema:
+            $ref: '#/definitions/model.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Response'
+      summary: Registration for test.
+      tags:
+      - authorization
   /reset-password:
     post:
       consumes:

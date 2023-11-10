@@ -20,8 +20,9 @@ type TokenPair struct {
 }
 
 type Admin struct {
-	ID string `json:"id" bson:"_id" validate:"uuid" example:""`
-	Identity
+	ID       string `json:"id" bson:"_id" validate:"omitempty,uuid" example:""`
+	Login    string `json:"login" bson:"login" validate:"email" example:"admin@example.com"`
+	Password string `json:"password" bson:"password" validate:"min=10,max=255" example:"password777"`
 }
 
 type Claims struct {

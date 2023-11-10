@@ -18,6 +18,7 @@ type AuthorizationServiceInterface interface {
 	RefreshService(context.Context, string) (model.TokenPair, error)
 	ForgotPasswordService(context.Context, string) error
 	ResetPasswordService(context.Context, model.ResetPassword) error
+	RegistrationForTestService(context.Context, model.Admin) error
 }
 
 // @Summary Authorization.
@@ -116,7 +117,6 @@ func SignOutHandler() fiber.Handler {
 // @Tags authorization
 // @Accept json
 // @Produce json
-// @Param TokenPair body model.TokenPair true "couple of access and refresh tokens"
 // @Success 200 {object} model.TokenPair
 // @Failure 401 {object} model.Response
 // @Failure 408 {object} model.Response
@@ -129,7 +129,6 @@ func RefreshHandler(s AuthorizationServiceInterface, log *slog.Logger, cfg confi
 			log.Debug(fmt.Sprintf("%s is empty", model.RefreshCookieName))
 
 			return c.SendStatus(fiber.StatusUnauthorized)
-			// return fiber.NewError(fiber.StatusUnauthorized, fmt.Sprintf("%s is empty", model.RefreshCookieName))
 		}
 
 		result, err := s.RefreshService(c.UserContext(), refreshToken)
@@ -232,5 +231,39 @@ func ResetPasswordHandler(s AuthorizationServiceInterface, log *slog.Logger) fib
 		}
 
 		return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))
+	}
+}
+
+// @Summary Registration for test.
+// @Description Registration for test.
+// @Tags authorization
+// @Accept json
+// @Produce json
+// @Param RegistrationForTest body model.Identity true "Registration for test"
+// @Success 201 {object} model.Response
+// @Failure 408 {object} model.Response
+// @Failure 500 {object} model.Response
+// @Router /registration-for-test [post].
+func RegistrationForTestHandler(s AuthorizationServiceInterface, log *slog.Logger) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		admin := model.Admin{}
+
+		if err := c.BodyParser(&admin); err != nil {
+			log.Debug("RegistrationForTestHandler error: ", err.Error())
+
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+
+		if err := validate.Struct(admin); err != nil {
+			log.Debug("RegistrationForTestHandler error: ", err.Error())
+
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+
+		if err := s.RegistrationForTestService(c.UserContext(), admin); err != nil {
+			return handleError(log, "RegistrationForTestService error: ", err)
+		}
+
+		return c.Status(fiber.StatusCreated).JSON(model.SetResponse(fiber.StatusCreated, "created"))
 	}
 }

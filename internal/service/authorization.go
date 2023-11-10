@@ -8,6 +8,7 @@ import (
 	"github.com/baza-trainee/walking-school-backend/internal/config"
 	"github.com/baza-trainee/walking-school-backend/internal/model"
 	"github.com/golang-jwt/jwt"
+	"github.com/google/uuid"
 )
 
 type AuthorizationStorageInterface interface {
@@ -15,6 +16,7 @@ type AuthorizationStorageInterface interface {
 	FindAdminByID(context.Context, string) error
 	FindAdminByLogin(context.Context, string) (model.Admin, error)
 	ResetPasswordByID(context.Context, string, string) error
+	RegistrationForTestStorage(context.Context, model.Admin) error
 }
 
 type Authorization struct {
@@ -97,6 +99,17 @@ func (a Authorization) ResetPasswordService(ctx context.Context, data model.Rese
 
 	if err := a.Storage.ResetPasswordByID(ctx, claims.ID, passwordHash); err != nil {
 		return fmt.Errorf("error occurred in ResetPasswordByID: %w", err)
+	}
+
+	return nil
+}
+
+func (a Authorization) RegistrationForTestService(ctx context.Context, admin model.Admin) error {
+	admin.ID = uuid.NewString()
+	admin.Password = SHA256(admin.Password, a.CfgAuth.Salt)
+
+	if err := a.Storage.RegistrationForTestStorage(ctx, admin); err != nil {
+		return fmt.Errorf("error occurred in RegistrationForTestStorage: %w", err)
 	}
 
 	return nil
