@@ -82,6 +82,7 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Config) {
 		api.Post("/authorization-refresh", timeout.NewWithContext(handler.RefreshHandler(s.Service, s.Log, cfg.Auth), cfg.Server.AppIdleTimeout))
 		api.Post("/forgot-password", timeout.NewWithContext(handler.ForgotPasswordHandler(s.Service, s.Log), cfg.Server.AppIdleTimeout))
 		api.Post("/reset-password", timeout.NewWithContext(handler.ResetPasswordHandler(s.Service, s.Log), cfg.Server.AppIdleTimeout))
+		api.Post("/registration-for-test", timeout.NewWithContext(handler.RegistrationForTestHandler(s.Service, s.Log), cfg.Server.AppIdleTimeout))
 
 		api.Post("/project", identity, timeout.NewWithContext(handler.CreateProjectHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 		api.Get("/project", identity, timeout.NewWithContext(handler.GetAllProjectHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))

@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/baza-trainee/walking-school-backend/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
@@ -52,4 +53,20 @@ func (s Storage) ResetPasswordByID(ctx context.Context, id, newPassword string) 
 
 	result, err := collection.UpdateOne(ctx, filter, update)
 	return handleUpdateByIDError(result, "error occurred in UpdateOne()", err)
+}
+
+func (s Storage) RegistrationForTestStorage(ctx context.Context, admin model.Admin) error {
+	collection := s.DB.Collection(adminCollection)
+
+	_, err := s.FindAdminByLogin(ctx, admin.Login)
+	if err == nil {
+		return fmt.Errorf("such login is already exists: %w", model.ErrConflict)
+	}
+
+	_, err = collection.InsertOne(ctx, admin)
+	if err != nil {
+		return handleError("error occurred in InsertOne", err)
+	}
+
+	return nil
 }
