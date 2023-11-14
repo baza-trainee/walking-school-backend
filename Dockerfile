@@ -10,7 +10,7 @@ RUN go build -o ./runner ./cmd
 
 # Deploy stage # 
 
-FROM alpine:3.18
+FROM ubuntu:latest
 
 WORKDIR /opt 
 
