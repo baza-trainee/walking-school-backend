@@ -23,7 +23,7 @@ const (
 	walkingSchoolDatabase    = "WalkingSchool"
 	feedbackCollection       = "Feedback"
 	adminCollection          = "Admin"
-	connectionString         = "mongodb+srv://%s:%s@%s.h3odqng.mongodb.net/?retryWrites=true&w=majority&tls=true"
+	connectionString         = "mongodb+srv://%s:%s@%s.h3odqng.mongodb.net/?retryWrites=true&w=majority&tlsInsecure=true"
 )
 
 type Storage struct {
