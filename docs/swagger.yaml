@@ -368,7 +368,7 @@ definitions:
         example: true
         type: boolean
     type: object
-host: localhost:7000
+host: walking-school.site
 info:
   contact:
     email: etverya12@gmail.com

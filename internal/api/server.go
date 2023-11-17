@@ -77,49 +77,53 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Config) {
 
 	api := app.Group(apiPrefix)
 	{
+		api.Get("/admin", identity, func(c *fiber.Ctx) error {
+			return c.Status(fiber.StatusOK).JSON(model.SetResponse(fiber.StatusOK, "success"))
+		})
+
 		api.Post("/login", timeout.NewWithContext(handler.SignInHandler(s.Service, s.Log, cfg.Auth), cfg.Server.AppIdleTimeout))
-		api.Post("/logout", timeout.NewWithContext(handler.SignOutHandler(), cfg.Server.AppIdleTimeout))
+		api.Post("/logout", identity, timeout.NewWithContext(handler.SignOutHandler(), cfg.Server.AppIdleTimeout))
 		api.Post("/authorization-refresh", timeout.NewWithContext(handler.RefreshHandler(s.Service, s.Log, cfg.Auth), cfg.Server.AppIdleTimeout))
 		api.Post("/forgot-password", timeout.NewWithContext(handler.ForgotPasswordHandler(s.Service, s.Log), cfg.Server.AppIdleTimeout))
 		api.Post("/reset-password", timeout.NewWithContext(handler.ResetPasswordHandler(s.Service, s.Log), cfg.Server.AppIdleTimeout))
 		api.Post("/registration-for-test", timeout.NewWithContext(handler.RegistrationForTestHandler(s.Service, s.Log), cfg.Server.AppIdleTimeout))
 
 		api.Post("/project", identity, timeout.NewWithContext(handler.CreateProjectHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Get("/project", identity, timeout.NewWithContext(handler.GetAllProjectHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Get("/project", timeout.NewWithContext(handler.GetAllProjectHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 		api.Get("/project/:id", identity, timeout.NewWithContext(handler.GetProjectByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 		api.Put("/project", identity, timeout.NewWithContext(handler.UpdateProjectByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 		api.Delete("/project/:id", identity, timeout.NewWithContext(handler.DeleteProjectByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 
-		api.Post("/user", timeout.NewWithContext(handler.CreateUserHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Get("/user", timeout.NewWithContext(handler.GetAllUserHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Get("/user/:id", timeout.NewWithContext(handler.GetUserByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Put("/user", timeout.NewWithContext(handler.UpdateUserByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Delete("/user/:id", timeout.NewWithContext(handler.DeleteUserByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Post("/user", identity, timeout.NewWithContext(handler.CreateUserHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Get("/user", identity, timeout.NewWithContext(handler.GetAllUserHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Get("/user/:id", identity, timeout.NewWithContext(handler.GetUserByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Put("/user", identity, timeout.NewWithContext(handler.UpdateUserByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Delete("/user/:id", identity, timeout.NewWithContext(handler.DeleteUserByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 
-		api.Post("/hero", timeout.NewWithContext(handler.CreateHeroHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Post("/hero", identity, timeout.NewWithContext(handler.CreateHeroHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 		api.Get("/hero", timeout.NewWithContext(handler.GetAllHeroHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Get("/hero/:id", timeout.NewWithContext(handler.GetHeroByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Put("/hero", timeout.NewWithContext(handler.UpdateHeroByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Delete("/hero/:id", timeout.NewWithContext(handler.DeleteHeroByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Get("/hero/:id", identity, timeout.NewWithContext(handler.GetHeroByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Put("/hero", identity, timeout.NewWithContext(handler.UpdateHeroByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Delete("/hero/:id", identity, timeout.NewWithContext(handler.DeleteHeroByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 
-		api.Post("/project-section-description", timeout.NewWithContext(handler.CreateProjSectDescHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Post("/project-section-description", identity, timeout.NewWithContext(handler.CreateProjSectDescHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 		api.Get("/project-section-description", timeout.NewWithContext(handler.GetAllProjSectDescHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Put("/project-section-description", timeout.NewWithContext(handler.UpdateProjSectDescByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Put("/project-section-description", identity, timeout.NewWithContext(handler.UpdateProjSectDescByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 
-		api.Post("/image-carousel", timeout.NewWithContext(handler.CreateImagesCarouselHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Post("/image-carousel", identity, timeout.NewWithContext(handler.CreateImagesCarouselHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 		api.Get("/image-carousel", timeout.NewWithContext(handler.GetAllImagesCarouselHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Put("/image-carousel", timeout.NewWithContext(handler.UpdateImagesCarouselByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Delete("/image-carousel/:id", timeout.NewWithContext(handler.DeleteImagesCarouselByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Put("/image-carousel", identity, timeout.NewWithContext(handler.UpdateImagesCarouselByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Delete("/image-carousel/:id", identity, timeout.NewWithContext(handler.DeleteImagesCarouselByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 
-		api.Post("/partner", timeout.NewWithContext(handler.CreatePartnerHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Post("/partner", identity, timeout.NewWithContext(handler.CreatePartnerHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 		api.Get("/partner", timeout.NewWithContext(handler.GetAllPartnerHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Get("/partner/:id", timeout.NewWithContext(handler.GetPartnerByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Put("/partner", timeout.NewWithContext(handler.UpdatePartnerByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Delete("/partner/:id", timeout.NewWithContext(handler.DeletePartnerByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Get("/partner/:id", identity, timeout.NewWithContext(handler.GetPartnerByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Put("/partner", identity, timeout.NewWithContext(handler.UpdatePartnerByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Delete("/partner/:id", identity, timeout.NewWithContext(handler.DeletePartnerByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 
-		api.Post("/contact", timeout.NewWithContext(handler.CreateContactHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Post("/contact", identity, timeout.NewWithContext(handler.CreateContactHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 		api.Get("/contact", timeout.NewWithContext(handler.GetAllContactHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
-		api.Put("/contact", timeout.NewWithContext(handler.UpdateContactByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
+		api.Put("/contact", identity, timeout.NewWithContext(handler.UpdateContactByIDHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 
 		api.Post("/feedback", timeout.NewWithContext(handler.CreateFeedbackHandler(s.Service, s.Log), cfg.Server.AppWriteTimeout))
 	}
@@ -127,8 +131,8 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Config) {
 
 func corsConfig() cors.Config {
 	return cors.Config{
-		// AllowOrigins: `https://walking-school.site`,
-		AllowOrigins: `*`,
+		// AllowOrigins: `*`,
+		AllowOrigins: `https://walking-school.site`,
 		AllowHeaders: "Origin, Content-Type, Accept, Access-Control-Allow-Credentials",
 		AllowMethods: strings.Join([]string{
 			fiber.MethodGet,
