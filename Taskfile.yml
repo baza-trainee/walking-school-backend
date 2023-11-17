@@ -3,10 +3,13 @@ version: "3"
 dotenv: [".env"]
 
 tasks:
+  build:
+    cmds:
+      - docker compose -f walking-school.yml up -d --build
+
   run:
     cmds:
        - docker compose -f walking-school.yml up -d
-      # - go run cmd/main.go
  
   stop:
     cmds:

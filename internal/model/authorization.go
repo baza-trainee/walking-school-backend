@@ -5,7 +5,7 @@ import "github.com/golang-jwt/jwt"
 const (
 	AccessCookieName  = "access-cookie"
 	RefreshCookieName = "refresh-cookie"
-	AccessCookiePath  = "/"
+	AccessCookiePath  = "/api/v1"
 	RefreshCookiePath = "/api/v1/authorization-refresh"
 )
 
