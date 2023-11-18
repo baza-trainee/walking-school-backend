@@ -131,8 +131,8 @@ func (s Server) initRoutes(app *fiber.App, cfg config.Config) {
 
 func corsConfig() cors.Config {
 	return cors.Config{
-		// AllowOrigins: `*`,
-		AllowOrigins: `https://walking-school.site`,
+		AllowOrigins: `*`,
+		// AllowOrigins: `https://walking-school.site`,
 		AllowHeaders: "Origin, Content-Type, Accept, Access-Control-Allow-Credentials",
 		AllowMethods: strings.Join([]string{
 			fiber.MethodGet,
